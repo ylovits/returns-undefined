@@ -1,0 +1,95 @@
+@import url("$lib/_common.less");
+@import url("$lib/_vars.less");
+
+
+#app .trivia {
+	position: inherit;
+	background-color: rgba(0,255,0,0.1);
+
+	.question {
+
+		width: 90vw;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		max-height: 90vh;
+		flex-direction: column;
+
+		h1 {
+			color: #fff;
+			font-size: 3rem;
+			margin-bottom: 3rem;
+			text-align: center;
+			white-space: pre-line;
+		}
+
+		.answers {
+			list-style: none;
+			padding: 0;
+
+			&-wrapper {
+				position: relative;
+				width: 80%;
+
+				.players {
+					background-color: rgba(255,0,0,0.3);
+					position: absolute;
+					right: 1rem;
+					top: 0;
+					bottom: 0;
+					align-items: start;
+
+					.player {
+						height: auto;
+						margin: 2rem 0rem;
+						width: 3rem;
+						&.active {
+							margin: 1rem 0rem;
+							width: 4rem;
+						}
+						padding: 0;
+						position: relative;
+					}
+				}
+
+
+			}
+
+			li {
+				flex-grow: 1;
+				position: relative;
+				margin: 1rem 0rem;
+				padding: 1rem 2rem;
+
+				.back {
+					background-color: @primary-d;
+					border: 3px solid @primary-m;
+
+					&.answered {
+						background-color: @action-d;
+						border: 3px solid @action-m;
+					}
+
+					border-radius: 3rem;
+					position: absolute;
+					top: 0;
+					left: 0;
+					right: 0;
+					bottom: 0;
+					filter: url(#pixelate-medium);
+				}
+
+				.text {
+					color: #fff;
+					font-size: 2rem;
+					margin: 0;
+					padding: 0;
+					position: relative;
+					line-height: 2rem;
+					vertical-align: baseline;
+					max-width: 50%;
+				}
+			}
+		}
+	}
+}

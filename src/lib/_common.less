@@ -1,0 +1,54 @@
+@import url("$lib/_vars.less");
+
+
+@font-face {
+	font-family: "Vaticanus";
+	src:
+		url("/fonts/Vaticanus.woff2") format("woff2"),
+		url("/fonts/Vaticanus.woff") format("woff"),
+		url("/fonts/Vaticanus.ttf") format("ttf");
+	font-weight: normal;
+	font-style: normal;
+}
+
+#app {
+	position: absolute;
+	top: 0;
+	left: 0;
+	bottom: 0;
+	right: 0;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	background: @primary-xxd;
+	color: @primary-xxl;
+	// font-family: ui-monospace, "Cascadia Mono", "Segoe UI Mono", "Liberation Mono", Menlo, Monaco, Consolas, monospace;
+	font-family: "Vaticanus", monospace;
+
+	main {
+		flex: 1;
+		align-content: center;
+
+		.nextBtn {
+			position: fixed;
+			bottom: 2rem;
+			right: 2rem;
+			margin-top: 2rem;
+			padding: 0.5rem 1rem;
+			border-radius: 0.3rem;
+			text-decoration: none;
+			font-size: 1rem;
+			cursor: pointer;
+			border: none;
+			background: darken(@primary-xd, 15%);
+			color: @primary-m;
+			z-index: 2;
+
+			&:hover {
+				background: darken(@primary-xd, 18%);
+				color: darken(@primary-m, 15%);
+			}
+		}
+	}
+}

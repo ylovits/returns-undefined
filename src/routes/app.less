@@ -1,0 +1,100 @@
+@import url("$lib/_common.less");
+@import url("$lib/_vars.less");
+
+#app {
+	main {
+		.players {
+
+			display: flex;
+		    align-items: center;
+    		justify-content: center;
+
+			.player {
+				width: 7rem;
+				height: 7rem;
+				padding: 1rem;
+				margin: 1rem;
+				filter: grayscale(1);
+				pointer-events: none;
+				transition: all 0.05s ease-in;
+				g {transition: all 0.08s ease-in;}
+
+				&.active {
+					filter: grayscale(0);
+					animation: none;
+				}
+
+				&.triangle {
+					fill: @triangle;
+				}
+
+				&.circle {
+					fill: @circle;
+				}
+
+				&.hexagon {
+					fill: @hexagon;
+				}
+
+				&.square {
+					fill: @square;
+				}
+
+				&.selected {
+					animation: waiting 1s infinite;
+					filter: url(#svgGlow);
+				}
+
+				&.failed {
+					filter: url(#dead);
+				}
+
+			}
+		}
+
+	}
+}
+
+.filter {
+	position: absolute;
+	top:0; left:0; right:0; bottom:0;
+	user-select: none !important;
+	pointer-events: none;
+	z-index: 1;
+	backdrop-filter: url(#pixelate-mosaic);
+}
+
+.filter-md {
+	z-index: 1;
+	filter: url(#pixelate-medium);
+}
+
+.filter-sm {
+	z-index: 1;
+	filter: url(#pixelate-small);
+}
+
+.filter-text {
+	z-index: 1;
+	filter: url(#pixelate-text);
+}
+
+@keyframes waiting {
+
+	from,
+	to {
+		transform: scale(1, 1);
+	}
+
+	50% {
+		transform: scale(0.95, 1.05);
+	}
+
+	60% {
+		transform: scale(1.05, 0.9);
+	}
+
+	70% {
+		transform: scale(0.95, 1.05);
+	}
+}

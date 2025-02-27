@@ -158,8 +158,8 @@ export const introControls = (gamepad: Gamepad) => {
 		pressedRightStick;
 
 	// Javascript is awesome :P
-	let xAxisSum = leftStickX + rightStickX + Number(pressedDPadRight) - Number(pressedDPadLeft);
-	let yAxisSum = leftStickY + rightStickY + Number(pressedDPadDown) - Number(pressedDPadUp);
+	const xAxisSum = leftStickX + rightStickX + Number(pressedDPadRight) - Number(pressedDPadLeft);
+	const yAxisSum = leftStickY + rightStickY + Number(pressedDPadDown) - Number(pressedDPadUp);
 
 	return {
 		pressing,
