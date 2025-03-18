@@ -8,7 +8,8 @@ export const initialPlayerObject = {
 	x: 0,
 	y: 0,
 	lastMovement: Date.now(),
-	currentSelection: 0
+	currentSelection: 0,
+	selected: false
 };
 
 export const shapes = ["triangle", "circle", "hexagon", "square"];
@@ -28,8 +29,3 @@ export const changeSelection = (direction: "up" | "down", player: Player, answer
 		player.currentSelection += 1;
 	}
 };
-
-
-
-
-

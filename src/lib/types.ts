@@ -9,11 +9,14 @@ export type Player = {
 	y: number;
 	lastMovement: number;
 	currentSelection: number;
+	selected: boolean;
 };
 
 export type Shapes = (typeof shapes)[number];
 
-export type PayersState = { [key: Shapes]: Player };
+export type PlayersState = { [key: number]: Player };
+export type ScoresState = { [key: number]: number };
+
 
 export type Question = {
 	text: string;

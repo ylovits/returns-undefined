@@ -8,13 +8,23 @@ export const readyCheck: Question = {
 
 export const questions: Question[] = [
 	{
-		text: "What is the capital of France?",
-		options: ["Paris", "London", "Berlin", "Madrid"],
+		text: "<pre class='code'>true</pre> returns:",
+		options: ["true", "false", "undefined", "null"],
 		correctAnswerIndex: 0,
 	},
 	{
-		text: "What is 2 + 2?",
-		options: ["3", "4", "5", "6"],
+		text: `<pre class='code'>!true</pre> returns:`,
+		options: ["true", "false", "undefined", "null"],
 		correctAnswerIndex: 1,
+	},
+	{
+		text: "<pre class='code'>!!true</pre> returns:",
+		options: ["true", "false", "undefined", "null"],
+		correctAnswerIndex: 0,
+	},
+	{
+		text: "<pre class='code'>!![]</pre> returns:",
+		options: ["'object'", "'[object Object]'", "false", "true"],
+		correctAnswerIndex: 3,
 	},
 ];

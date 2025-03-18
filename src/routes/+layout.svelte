@@ -3,15 +3,18 @@
 	import Filters from "$lib/filters.svelte";
 	import { onMount } from "svelte";
 
-	import type { PayersState } from "$types";
+	import type { PlayersState, ScoresState } from "$types";
 	import { initialPlayerObject, shapes } from "$lib/players";
 	import { setContext } from 'svelte';
 
 	let props = $props();
 
-	let players = $state<PayersState>({});
 	let currentPage = $state<string>(props.data.pageName);
+	let players = $state<PlayersState>({});
+	let scores = $state<ScoresState>({});
 	setContext('players', { players });
+	setContext('scores', { scores });
+
 
 	$effect(() => {
 		if (props.data.pageName) currentPage = props.data.pageName;
@@ -38,6 +41,7 @@
 				active: true,
 				gamepad: event.gamepad,
 			};
+			scores[event.gamepad.index] = scores[event.gamepad.index] || 0;
 		};
 
 		const handleGamepadDisconnected = (event: GamepadEvent) => {
@@ -57,9 +61,10 @@
 		return () => {
 			players = {};
 			setContext('players', { players });
+			scores = {};
+			setContext('scores', { scores });
 			window.removeEventListener("gamepadconnected", handleGamepadConnected);
 			window.removeEventListener("gamepaddisconnected", handleGamepadDisconnected);
-
 		};
 	});
 </script>

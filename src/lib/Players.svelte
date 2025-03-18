@@ -1,68 +1,85 @@
 <script lang="ts">
-	import type { PayersState, Shapes } from "$types";
-	import { changeSelection, initialPlayerObject, shapes, shapeSVGs } from "./players";
-
+	import type { PlayersState, ScoresState } from "$types";
+	import Player from "$lib/Player.svelte";
+	import { changeSelection, initialPlayerObject, shapes } from "./players";
 	import { getContext, onMount } from "svelte";
-	import { introControls } from "./gamepad";
+	import { mainControls, inQuizControls } from "./gamepad";
 
-	let players = $state<PayersState>({});
+	let players = $state<PlayersState>({});
+	let scores = $state<ScoresState>({});
 	let answerPositions = $state<number[]>([]);
 
-	const playersContext = getContext<{ players: PayersState }>("players");
+	const playersContext = getContext<{ players: PlayersState }>("players");
+	const scoresContext = getContext<{ scores: ScoresState }>("scores");
 	let props = $props();
 
-	const multiplier = props.pageName === "landing" ? 5 : 1;
-	console.log("🚀 - multiplier:", multiplier);
+	const multiplier = props.pageName === "landing" ? 5 : 1 / 2;
 
 	onMount(() => {
 		let frame = requestAnimationFrame(function update() {
 			players = playersContext.players || {};
-			if (!answerPositions.length && props.answerElements) {
-				answerPositions = props.answerElements.map((elm: HTMLElement) => {
-					return elm.getBoundingClientRect().top - props.wrapperElm.getBoundingClientRect().top;
-				});
-			}
+			scores = scoresContext.scores || {};
 
 			Object.keys(players).forEach((playerKey) => {
 				const myGamepad = navigator.getGamepads()[Number(playerKey)];
 				if (myGamepad) {
-					const { pressing, yAxisSum, xAxisSum } = introControls(myGamepad);
+					const player = players[myGamepad.index];
 
-					const rumble = props.pageName === "landing" && pressing;
+					const landingPage = props.pageName === "landing";
+					const { pressing, yAxisSum, xAxisSum } = mainControls(myGamepad);
 
-					const now = Date.now();
-					const timeSinceLastMove = now - players[myGamepad.index].lastMovement;
-
-					if (props.pageName && props.pageName !== "landing" && answerPositions) {
-						if (Math.abs(yAxisSum) > 0.5 && timeSinceLastMove > 200) {
-							changeSelection(yAxisSum > 0 ? "down" : "up", players[myGamepad.index], answerPositions.length);
-							players[myGamepad.index].lastMovement = Date.now();
-							players[myGamepad.index].y = answerPositions[players[myGamepad.index].currentSelection] * 2.95;
-						} else {
-							players[myGamepad.index].y = answerPositions[players[myGamepad.index].currentSelection] * 2.95;
+					if (landingPage) {
+						player.y = player.selected ? player.y : yAxisSum * 60;
+						if (pressing) {
+							myGamepad.vibrationActuator.playEffect("trigger-rumble", {
+								startDelay: 0,
+								duration: 5,
+								weakMagnitude: 1,
+								strongMagnitude: 1,
+							});
+							player.x += Math.floor(Math.random() * 21 * multiplier) - 11 * multiplier;
+							player.y += Math.floor(Math.random() * 21 * multiplier) - 10 * multiplier;
 						}
 					} else {
-						players[myGamepad.index].y = yAxisSum * 60;
+						if (!answerPositions.length && props.answerElements) {
+							answerPositions = props.answerElements.map((elm: HTMLElement) => {
+								return elm.getBoundingClientRect().top - props.wrapperElm.getBoundingClientRect().top;
+							});
+						}
+						const { moveDown, moveUp, select } = inQuizControls(myGamepad);
+						const now = Date.now();
+						const timeSinceLastMove = now - player.lastMovement;
+
+						if (answerPositions && !player.selected) {
+							if ((moveDown || moveUp) && timeSinceLastMove > 200) {
+								changeSelection(moveDown ? "down" : "up", player, answerPositions.length);
+								player.lastMovement = Date.now();
+								player.y = answerPositions[player.currentSelection] * multiplier;
+							} else {
+								player.y = answerPositions[player.currentSelection] * multiplier;
+							}
+						} else {
+							player.y = player.selected ? player.y : yAxisSum * 60;
+						}
+
+						if (select && timeSinceLastMove > 200) {
+							player.lastMovement = Date.now();
+							if(!!player.currentSelection || player.currentSelection == 0) {
+								scores[myGamepad.index] = (player.currentSelection === props.question.correctAnswerIndex && !player.selected) ? scores[myGamepad.index] + 1 : scores[myGamepad.index]
+								player.selected = true;
+							} else {
+								player.selected = false;
+							}
+						}
 					}
 
-					players[myGamepad.index].pressing = rumble;
-					players[myGamepad.index].x = xAxisSum * 60;
-
-					if (rumble) {
-						myGamepad.vibrationActuator.playEffect("trigger-rumble", {
-							startDelay: 0,
-							duration: 5,
-							weakMagnitude: 1,
-							strongMagnitude: 1,
-						});
-						players[myGamepad.index].x += Math.floor(Math.random() * 21 * multiplier) - 11 * multiplier;
-						players[myGamepad.index].y += Math.floor(Math.random() * 21 * multiplier) - 10 * multiplier;
-					}
+					player.x = landingPage ? xAxisSum * 12 * multiplier : player.x;
 				}
 			});
 
 			frame = requestAnimationFrame(update);
 		});
+
 
 		return () => {
 			cancelAnimationFrame(frame);
@@ -70,19 +87,12 @@
 	});
 </script>
 
-<div class={`players ${props.pageName === "landing" ? "filter-md" : "filter-text"}`}>
+<div class={`players ${props.pageName === "landing" ? "filter-md" : "filter-xs"}`}>
 	{#key players}
 		{#each shapes as shape, i}
-			{@const { active, pressing, x, y } = players && players[i] && players[i].active ? players[i] : initialPlayerObject}
-			<svg
-				class="{shape} player {active ? 'active' : ''} {pressing ? 'pressing' : ''}"
-				viewBox="0 0 377 377"
-				style={`overflow: visible; ${x ? "transform: rotate(" + (x / Math.abs(x)) * 5 + "deg)" : ""}`}
-			>
-				<g style={`transform: translate(${x * 2}px, ${y * 2}px)`}>
-					{@html shapeSVGs[shape as Shapes]}
-				</g>
-			</svg>
+			{@const { active, pressing, selected, x, y } =
+				players && players[i] && players[i].active ? players[i] : initialPlayerObject}
+			<Player {active} {pressing} {selected} {x} {y} {shape} {multiplier} />
 		{/each}
 	{/key}
 </div>

@@ -104,22 +104,22 @@ export const inQuizControls = (gamepad: Gamepad) => {
 		pressedY,
 	} = readControls(gamepad);
 
-	const moveDown = leftStickY > 0.05 || rightStickY > 0.05 || pressedDPadDown;
-	const moveUp = leftStickY < 0.05 || rightStickY < 0.05 || pressedDPadUp;
-	const moveLeft = leftStickX < 0.05 || rightStickX < 0.05 || pressedDPadLeft;
-	const moveRight = leftStickX > 0.05 || rightStickX > 0.05 || pressedDPadRight;
-	const selectAnswer = pressedA || pressedB || pressedX || pressedY;
+	const moveDown = leftStickY > 0.5 || rightStickY > 0.5 || pressedDPadDown;
+	const moveUp = leftStickY < -0.5 || rightStickY < -0.5 || pressedDPadUp;
+	const moveLeft = leftStickX < -0.5 || rightStickX < -0.5 || pressedDPadLeft;
+	const moveRight = leftStickX > 0.5 || rightStickX > 0.5 || pressedDPadRight;
+	const select = pressedA || pressedB || pressedX || pressedY;
 
 	return {
 		moveDown,
 		moveUp,
 		moveLeft,
 		moveRight,
-		selectAnswer,
+		select,
 	};
 };
 
-export const introControls = (gamepad: Gamepad) => {
+export const mainControls = (gamepad: Gamepad) => {
 	const {
 		pressedA,
 		pressedB,

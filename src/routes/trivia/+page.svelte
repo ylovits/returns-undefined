@@ -1,6 +1,10 @@
 <script lang="ts">
 	import Players from "$lib/Players.svelte";
+	import { getContext } from "svelte";
 	import "./trivia.less";
+	import type { PlayersState } from "$types";
+
+	let players = $state<PlayersState>({});
 	let { data } = $props();
 
 	let answerElements: HTMLLIElement[] = [];
@@ -10,7 +14,7 @@
 <div class="question">
 	<h1>{data.question.text}</h1>
 	<span class="answers-wrapper"  >
-		<Players pageName="trivia" {answerElements} {wrapperElm} />
+		<Players pageName="trivia" {answerElements} {wrapperElm} question={data.question} />
 		<ul class="answers" bind:this={wrapperElm}>
 			{#each data.question.options as option, i}
 				<li id={`answer-${i + 1}`} bind:this={answerElements[i]}>
@@ -21,4 +25,4 @@
 		</ul>
 	</span>
 </div>
-<a class="nextBtn" href="/trivia/1" data-sveltekit-preload-data>Continue</a>
+<a class="nextBtn" href="/trivia/0" data-sveltekit-preload-data>Continue</a>

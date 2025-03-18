@@ -5,8 +5,22 @@
 	font-family: "Vaticanus";
 	src:
 		url("/fonts/Vaticanus.woff2") format("woff2"),
-		url("/fonts/Vaticanus.woff") format("woff"),
-		url("/fonts/Vaticanus.ttf") format("ttf");
+		url("/fonts/Vaticanus.woff") format("woff");
+	font-weight: normal;
+	font-style: normal;
+}
+
+@font-face {
+	font-family: "Pixelon";
+	src:
+	url("/fonts/Pixelon.woff") format("woff");
+	font-weight: normal;
+	font-style: normal;
+}
+
+@font-face {
+	font-family: "PixeloidBold";
+	src: url("/fonts/PixeloidSansBold.woff") format("woff");
 	font-weight: normal;
 	font-style: normal;
 }
@@ -23,7 +37,6 @@
 	justify-content: center;
 	background: @primary-xxd;
 	color: @primary-xxl;
-	// font-family: ui-monospace, "Cascadia Mono", "Segoe UI Mono", "Liberation Mono", Menlo, Monaco, Consolas, monospace;
 	font-family: "Vaticanus", monospace;
 
 	main {
@@ -38,7 +51,7 @@
 			padding: 0.5rem 1rem;
 			border-radius: 0.3rem;
 			text-decoration: none;
-			font-size: 1rem;
+			font-size: 2rem;
 			cursor: pointer;
 			border: none;
 			background: darken(@primary-xd, 15%);

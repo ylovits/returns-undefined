@@ -1,6 +1,6 @@
-import { initDBs } from "$lib/server/database";
+import { initDB } from "$lib/server/database";
 
 export async function PUT() {
-	initDBs();
+	initDB();
 	return new Response(null, { status: 200 });
 }

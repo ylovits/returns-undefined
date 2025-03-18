@@ -4,7 +4,50 @@
 
 #app .trivia {
 	position: inherit;
-	background-color: rgba(0,255,0,0.1);
+
+	.players {
+		.player {
+			&.active {
+				filter: none;
+			}
+
+			&.selected {
+				filter: url(#svgGlow);
+			}
+		}
+	}
+
+	.score {
+		position: fixed;
+		top: 2rem;
+		right: 2rem;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+
+		&.players {
+			.wrapper {
+				display: flex;
+				flex-direction: column;
+				align-items: center;
+				width: 3rem;
+				margin: 0 1rem;
+
+				.player {
+					width: 3rem;
+					height: 3rem;
+					margin:0;
+					padding: 0;
+					filter: none;
+				}
+
+				.points {
+					font-size: 1.3rem;
+				}
+			}
+		}
+
+	}
 
 	.question {
 
@@ -14,6 +57,7 @@
 		justify-content: center;
 		max-height: 90vh;
 		flex-direction: column;
+		padding-bottom: 1rem;
 
 		h1 {
 			color: #fff;
@@ -21,6 +65,26 @@
 			margin-bottom: 3rem;
 			text-align: center;
 			white-space: pre-line;
+			font-family: "Vaticanus", monospace;
+			width: 80%;
+			text-align: center;
+			pre {
+				// font-family: "Vaticanus", monospace;
+				// font-family: "PixeloidBold", monospace;
+				// width:100%;
+				font-family: "Pixelon", monospace;
+				padding: 1rem 2rem;
+				margin:1rem;
+				border-radius: 0.3rem;
+				background: #000;
+				color: #aaa;
+				white-space: normal;
+				page-break-inside: avoid;
+				display: block;
+				word-wrap: break-word;
+				white-space: pre;
+				text-align: left;
+			}
 		}
 
 		.answers {
@@ -32,7 +96,6 @@
 				width: 80%;
 
 				.players {
-					background-color: rgba(255,0,0,0.3);
 					position: absolute;
 					right: 1rem;
 					top: 0;
@@ -41,12 +104,8 @@
 
 					.player {
 						height: auto;
-						margin: 2rem 0rem;
-						width: 3rem;
-						&.active {
-							margin: 1rem 0rem;
-							width: 4rem;
-						}
+						margin: 1rem 0rem;
+						width: 4rem;
 						padding: 0;
 						position: relative;
 					}
