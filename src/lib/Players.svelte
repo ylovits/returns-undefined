@@ -11,6 +11,11 @@
 
 	const playersContext = getContext<{ players: PlayersState }>("players");
 	const scoresContext = getContext<{ scores: ScoresState }>("scores");
+	const { setReadyCheckCount, getReadyCheckCount } = getContext<{
+		setReadyCheckCount: (count: number) => void;
+		getReadyCheckCount: () => number;
+	}>("readyCheck");
+
 	let props = $props();
 
 	const multiplier = props.pageName === "landing" ? 5 : 1 / 2;
@@ -19,6 +24,7 @@
 		let frame = requestAnimationFrame(function update() {
 			players = playersContext.players || {};
 			scores = scoresContext.scores || {};
+			const currentReadyCheckCount = getReadyCheckCount();
 
 			Object.keys(players).forEach((playerKey) => {
 				const myGamepad = navigator.getGamepads()[Number(playerKey)];
@@ -64,11 +70,16 @@
 
 						if (select && timeSinceLastMove > 200) {
 							player.lastMovement = Date.now();
-							if(!!player.currentSelection || player.currentSelection == 0) {
-								scores[myGamepad.index] = (player.currentSelection === props.question.correctAnswerIndex && !player.selected) ? scores[myGamepad.index] + 1 : scores[myGamepad.index]
+							if (!!player.currentSelection || player.currentSelection == 0) {
+								scores[myGamepad.index] =
+									player.currentSelection === props.question.correctAnswerIndex && !player.selected
+										? scores[myGamepad.index] + 1
+										: scores[myGamepad.index];
+								if(!player.selected) setReadyCheckCount(currentReadyCheckCount + 1);
 								player.selected = true;
 							} else {
 								player.selected = false;
+								setReadyCheckCount(currentReadyCheckCount - 1);
 							}
 						}
 					}
@@ -80,14 +91,13 @@
 			frame = requestAnimationFrame(update);
 		});
 
-
 		return () => {
 			cancelAnimationFrame(frame);
 		};
 	});
 </script>
 
-<div class={`players ${props.pageName === "landing" ? "filter-md" : "filter-xs"}`}>
+<div class={`players`}>
 	{#key players}
 		{#each shapes as shape, i}
 			{@const { active, pressing, selected, x, y } =

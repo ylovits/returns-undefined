@@ -57,11 +57,20 @@
 			background: darken(@primary-xd, 15%);
 			color: @primary-m;
 			z-index: 2;
+			font-family: "Vaticanus", monospace;
 
 			&:hover {
 				background: darken(@primary-xd, 18%);
 				color: darken(@primary-m, 15%);
 			}
+			&:disabled {
+				filter: grayscale(0.5);
+				opacity: 0.5;
+			}
 		}
 	}
+}
+
+.balanceOutFilter() {
+	transform: translate(0, -0.5rem);
 }

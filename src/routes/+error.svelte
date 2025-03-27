@@ -22,4 +22,8 @@
 		justify-content: center;
 		text-align: center;
 	}
+
+	h1 {
+		z-index: 2;
+	}
 </style>

@@ -2,8 +2,8 @@ import type { Question } from "$types";
 
 export const readyCheck: Question = {
 	text: "Let's see if you got the controls. \nAre you ready to start the quiz?",
-	options: ["Yes", "No"],
-	correctAnswerIndex: 0,
+	options: ["No", "Yes"],
+	correctAnswerIndex: 1,
 };
 
 export const questions: Question[] = [

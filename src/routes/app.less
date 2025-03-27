@@ -20,8 +20,9 @@
 			}
 
 			h1 {
+				font-size: 3rem;
 				margin-left: 1rem;
-				z-index: 1;
+				z-index: 4;
 				filter: url(#softGlow);
 			}
 		}
@@ -94,18 +95,24 @@
 	bottom: 0;
 	user-select: none !important;
 	pointer-events: none;
-	z-index: 1;
+	z-index: 2;
 	backdrop-filter: url(#pixelate-mosaic);
+}
+
+
+.filter-rg {
+	z-index: 1;
+	filter: url(#pixelate);
 }
 
 .filter-md {
 	z-index: 1;
-	filter: url(#pixelate-medium);
+	filter: url(#pixelate-md);
 }
 
 .filter-sm {
 	z-index: 1;
-	filter: url(#pixelate-small);
+	filter: url(#pixelate-sm);
 }
 
 .filter-xs {
