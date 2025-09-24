@@ -2,7 +2,8 @@
 	import Players from "$lib/Players.svelte";
 	import { goto } from "$app/navigation";
 	import type { PlayersState } from "$types";
-	import { getContext } from "svelte";
+	import { getContext, onMount } from "svelte";
+	import useLocalStorage from "$lib/storage.svelte";
 
 	const playersContext = getContext<{ players: PlayersState }>("players");
 
@@ -12,6 +13,11 @@
 			return player.active;
 		})
 	);
+
+	onMount(() => {
+		const score = useLocalStorage("score");
+		score.value = null;
+	});
 </script>
 
 <div class="title">

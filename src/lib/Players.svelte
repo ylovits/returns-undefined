@@ -4,8 +4,10 @@
 	import { changeSelection, initialPlayerObject, shapes } from "./players";
 	import { getContext, onMount } from "svelte";
 	import { mainControls, inQuizControls } from "./gamepad";
+	import useLocalStorage from "$lib/storage.svelte";
 
 	let players = $state<PlayersState>({});
+	const score = useLocalStorage("score");
 	let scores = $state<ScoresState>({});
 	let answerPositions = $state<number[]>([]);
 
@@ -21,8 +23,13 @@
 	const multiplier = props.pageName === "landing" ? 5 : 1 / 2;
 
 	onMount(() => {
+		if (!scoresContext.scores) {
+			scoresContext.scores = score.value;
+		}
+
 		let frame = requestAnimationFrame(function update() {
 			players = playersContext.players || {};
+			// let currentScore = score.value || {};
 			scores = scoresContext.scores || {};
 			const currentReadyCheckCount = getReadyCheckCount();
 
@@ -71,11 +78,20 @@
 						if (select && timeSinceLastMove > 200) {
 							player.lastMovement = Date.now();
 							if (!!player.currentSelection || player.currentSelection == 0) {
-								scores[myGamepad.index] =
+								console.log(
+									"🚀 - Object.keys - player.currentSelection === props.question.correctAnswerIndex && !player.selected:",
+									player.currentSelection === props.question.correctAnswerIndex && !player.selected
+								);
+								console.log("🚀 - Object.keys - scores[myGamepad.index]: 1", scores[myGamepad.index])
+
+								scoresContext.scores[myGamepad.index] =
 									player.currentSelection === props.question.correctAnswerIndex && !player.selected
 										? scores[myGamepad.index] + 1
 										: scores[myGamepad.index];
-								if(!player.selected) setReadyCheckCount(currentReadyCheckCount + 1);
+										console.log("🚀 - Object.keys - scores[myGamepad.index] 2:", scores[myGamepad.index])
+										console.log("🚀 - Object.keys - scoresContext.scores:", scoresContext.scores)
+
+								if (!player.selected) setReadyCheckCount(currentReadyCheckCount + 1);
 								player.selected = true;
 							} else {
 								player.selected = false;
@@ -87,6 +103,7 @@
 					player.x = landingPage ? xAxisSum * 12 * multiplier : player.x;
 				}
 			});
+			// score.value = currentScore;
 
 			frame = requestAnimationFrame(update);
 		});
@@ -102,7 +119,9 @@
 		{#each shapes as shape, i}
 			{@const { active, pressing, selected, x, y } =
 				players && players[i] && players[i].active ? players[i] : initialPlayerObject}
-			<Player {active} {pressing} {selected} {x} {y} {shape} {multiplier} />
+			{#if active}
+				<Player {active} {pressing} {selected} {x} {y} {shape} {multiplier} />
+			{/if}
 		{/each}
 	{/key}
 </div>

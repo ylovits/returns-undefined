@@ -3,10 +3,13 @@
 	import type { PlayersState, ScoresState } from "$types";
 	import { getContext } from "svelte";
 	import { goto } from "$app/navigation";
+	import useLocalStorage from "$lib/storage.svelte";
+
 	import "./trivia.less";
 
 	const { players } = getContext<{ players: PlayersState }>("players");
-	const { scores } = getContext<{ scores: ScoresState }>("scores");
+	const scoresContext = getContext<{ scores: ScoresState }>("scores");
+	const score = useLocalStorage("score");
 	const { setReadyCheckCount, getReadyCheckCount } = getContext<{
 		setReadyCheckCount: (count: number) => void;
 		getReadyCheckCount: () => number;
@@ -15,7 +18,7 @@
 	let { data } = $props();
 	let readyPlayers = $derived<number>(getReadyCheckCount());
 
-	let answerElements: HTMLLIElement[] = [];
+	let answerElements = $state<HTMLLIElement[]>([]);
 	let wrapperElm = $state<HTMLSpanElement>();
 	let allAnswered = $derived<boolean>(readyPlayers === Object.keys(players).length);
 	let allCorrect = $derived<boolean>(
@@ -28,6 +31,8 @@
 	let buttonText = $derived<string>(!allAnswered ? "Waiting..." : allCorrect ? "Start Game" : "Try Again");
 
 	const resetStage = () => {
+		let currentScore = score.value || {};
+
 		Object.keys(players).forEach((playerKey) => {
 			players[Number(playerKey)].x = 0;
 			players[Number(playerKey)].y = 0;
@@ -35,8 +40,10 @@
 			players[Number(playerKey)].currentSelection = 0;
 			players[Number(playerKey)].selected = false;
 			setReadyCheckCount(0);
-			scores[Number(playerKey)] = 0;
+			currentScore[Number(playerKey)] = 0;
 		});
+		scoresContext.scores = currentScore;
+		score.value = currentScore;
 	};
 
 	const handleClick = () => {

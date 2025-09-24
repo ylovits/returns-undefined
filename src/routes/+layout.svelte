@@ -5,12 +5,14 @@
 	import type { PlayersState, ScoresState } from "$types";
 	import { initialPlayerObject, shapes } from "$lib/players";
 	import { setContext } from "svelte";
+	import useLocalStorage from "$lib/storage.svelte";
 
 	let props = $props();
 
 	let currentPage = $state<string>(props.data.pageName);
 	let players = $state<PlayersState>({});
-	let scores = $state<ScoresState>({});
+	const score = useLocalStorage("score");
+	let scores = $state<ScoresState>(score.value || {});
 	let readyCheckCount = $state<number>(0);
 
 	const setReadyCheckCount = (count: number) => {
@@ -31,6 +33,8 @@
 	});
 
 	onMount(() => {
+		console.log("🚀 - onMount  LAYOUT- score.value:", scores)
+
 		const existingGamePads = navigator.getGamepads();
 		if (existingGamePads.length > 0) {
 			existingGamePads.forEach((gamepad, index) => {

@@ -4,9 +4,13 @@
 	import { goto } from "$app/navigation";
 	import { getContext } from "svelte";
 	import "../trivia.less";
-	import type { PlayersState } from "$types";
+	import type { PlayersState, ScoresState } from "$types";
+	import useLocalStorage from "$lib/storage.svelte";
 
 	const { players } = getContext<{ players: PlayersState }>("players");
+	const scoresContext = getContext<{ scores: ScoresState }>("scores");
+	const score = useLocalStorage("score");
+
 	const { getReadyCheckCount, setReadyCheckCount } = getContext<{
 		setReadyCheckCount: (count: number) => void;
 		getReadyCheckCount: () => number;
@@ -24,6 +28,7 @@
 
 	const getClasses = (i: number) => {
 		const correct = readyPlayers > 0 && allAnswered && data.question.correctAnswerIndex === i;
+		console.log("🚀 - getClasses - correct:", correct)
 		const selected = Object.keys(players).some((playerKey) => players[Number(playerKey)].currentSelection === i);
 		const answered = Object.keys(players).some(
 			(playerKey) => players[Number(playerKey)].currentSelection === i && players[Number(playerKey)].selected
@@ -43,13 +48,18 @@
 		});
 	};
 
+	const updateScore = () => {
+		score.value = scoresContext.scores;
+	};
+
 	const handleClick = () => {
+		updateScore();
 		resetPlayerAnswers();
 		goto("/trivia/" + data.nextPage);
 	};
 </script>
 
-<Score />
+<Score scores={score.value} {players} />
 <div class="question">
 	<h1>{@html data.question.text}</h1>
 
