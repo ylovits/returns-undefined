@@ -78,18 +78,11 @@
 						if (select && timeSinceLastMove > 200) {
 							player.lastMovement = Date.now();
 							if (!!player.currentSelection || player.currentSelection == 0) {
-								console.log(
-									"🚀 - Object.keys - player.currentSelection === props.question.correctAnswerIndex && !player.selected:",
-									player.currentSelection === props.question.correctAnswerIndex && !player.selected
-								);
-								console.log("🚀 - Object.keys - scores[myGamepad.index]: 1", scores[myGamepad.index])
 
 								scoresContext.scores[myGamepad.index] =
 									player.currentSelection === props.question.correctAnswerIndex && !player.selected
 										? scores[myGamepad.index] + 1
 										: scores[myGamepad.index];
-										console.log("🚀 - Object.keys - scores[myGamepad.index] 2:", scores[myGamepad.index])
-										console.log("🚀 - Object.keys - scoresContext.scores:", scoresContext.scores)
 
 								if (!player.selected) setReadyCheckCount(currentReadyCheckCount + 1);
 								player.selected = true;

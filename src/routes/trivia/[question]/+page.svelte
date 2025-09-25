@@ -28,7 +28,6 @@
 
 	const getClasses = (i: number) => {
 		const correct = readyPlayers > 0 && allAnswered && data.question.correctAnswerIndex === i;
-		console.log("🚀 - getClasses - correct:", correct)
 		const selected = Object.keys(players).some((playerKey) => players[Number(playerKey)].currentSelection === i);
 		const answered = Object.keys(players).some(
 			(playerKey) => players[Number(playerKey)].currentSelection === i && players[Number(playerKey)].selected
