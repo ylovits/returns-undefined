@@ -9,7 +9,7 @@ export const initialPlayerObject = {
 	y: 0,
 	lastMovement: Date.now(),
 	currentSelection: 0,
-	selected: false
+	selected: false,
 };
 
 export const shapes = ["triangle", "circle", "hexagon", "square"];
@@ -23,9 +23,9 @@ export const shapeSVGs: { [key in Shapes]: string } = {
 
 export const changeSelection = (direction: "up" | "down", player: Player, answersNo: number) => {
 	if (!player.gamepad) return;
-	if ( direction === "up" && player.currentSelection > 0 ) {
+	if (direction === "up" && player.currentSelection > 0) {
 		player.currentSelection -= 1;
-	} else if (direction === "down" && player.currentSelection < answersNo - 1 ){
+	} else if (direction === "down" && player.currentSelection < answersNo - 1) {
 		player.currentSelection += 1;
 	}
 };

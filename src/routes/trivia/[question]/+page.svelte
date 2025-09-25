@@ -2,11 +2,12 @@
 	import Players from "$lib/Players.svelte";
 	import Score from "$lib/Score.svelte";
 	import { goto } from "$app/navigation";
-	import { getContext } from "svelte";
+	import { getContext, onMount } from "svelte";
 	import "../trivia.less";
 	import type { PlayersState, ScoresState } from "$types";
 	import useLocalStorage from "$lib/storage.svelte";
 	import { processQuestionText } from "$lib/syntax-highlighting";
+	import confetti from "canvas-confetti";
 
 	const { players } = getContext<{ players: PlayersState }>("players");
 	const scoresContext = getContext<{ scores: ScoresState }>("scores");
@@ -25,9 +26,54 @@
 
 	let allAnswered = $derived<boolean>(readyPlayers === Object.keys(players).length);
 
-	let buttonText = $derived<string>(!allAnswered ? "Waiting..." : "Next Question");
+	let buttonText = $derived<string>(
+		!allAnswered ? "Waiting..." : data.isLastQuestion ? "Show Results" : "Next Question"
+	);
 
 	let highlightedQuestionText = $derived<string>(processQuestionText(data.question.text));
+
+	// Track if confetti has been shown for this question
+	let confettiShown = $state<boolean>(false);
+
+	// Check if any player has selected an answer on the last question
+	let anyPlayerSelected = $derived<boolean>(
+		Object.keys(players).some((playerKey) => players[Number(playerKey)].selected)
+	);
+
+	// Trigger confetti when players have selected answers AND all players are done with the last question
+	$effect(() => {
+		if (data.isLastQuestion && anyPlayerSelected && allAnswered && !confettiShown) {
+			confettiShown = true;
+
+			// Multiple bursts of confetti for a "tada" effect
+			const duration = 3000;
+			const end = Date.now() + duration;
+
+			const colors = ["#ff6b6b", "#4ecdc4", "#45b7d1", "#f9ca24", "#6c5ce7", "#a29bfe"];
+
+			function frame() {
+				confetti({
+					particleCount: 2,
+					angle: 60,
+					spread: 55,
+					origin: { x: 0 },
+					colors: colors,
+				});
+				confetti({
+					particleCount: 2,
+					angle: 120,
+					spread: 55,
+					origin: { x: 1 },
+					colors: colors,
+				});
+
+				if (Date.now() < end) {
+					requestAnimationFrame(frame);
+				}
+			}
+			frame();
+		}
+	});
 
 	const getClasses = (i: number) => {
 		const correct = readyPlayers > 0 && allAnswered && data.question.correctAnswerIndex === i;
@@ -57,7 +103,12 @@
 	const handleClick = () => {
 		updateScore();
 		resetPlayerAnswers();
-		goto("/trivia/" + data.nextPage);
+
+		if (data.isLastQuestion) {
+			goto("/trivia/results");
+		} else {
+			goto("/trivia/" + data.nextPage);
+		}
 	};
 </script>
 

@@ -5,7 +5,6 @@
 	overflow: hidden;
 
 	main {
-
 		.title {
 			display: flex;
 			align-items: center;
@@ -18,7 +17,6 @@
 				width: 8rem;
 				height: auto;
 				filter: url(#svgGlow);
-
 			}
 
 			h1 {
@@ -30,7 +28,6 @@
 		}
 
 		.players {
-
 			display: flex;
 			align-items: center;
 			justify-content: center;
@@ -49,7 +46,6 @@
 
 				g {
 					transition: all 0.08s ease-in;
-
 				}
 
 				&.active {
@@ -83,10 +79,8 @@
 				&.failed {
 					filter: url(#dead);
 				}
-
 			}
 		}
-
 	}
 }
 
@@ -101,7 +95,6 @@
 	z-index: 2;
 	backdrop-filter: url(#pixelate-mosaic);
 }
-
 
 .filter-rg {
 	z-index: 1;
@@ -124,7 +117,6 @@
 }
 
 @keyframes waiting {
-
 	from,
 	to {
 		transform: translate(3rem, 3rem) scale(0.7);

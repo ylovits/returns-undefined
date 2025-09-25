@@ -40,6 +40,7 @@ pnpm run dev
 ```
 
 **Note**: Volta will automatically:
+
 - Install and use Node.js v22.13.1
 - Install and use pnpm v10.17.1
 - Ensure all team members use the same versions

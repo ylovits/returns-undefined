@@ -17,7 +17,6 @@ export type Shapes = (typeof shapes)[number];
 export type PlayersState = { [key: number]: Player };
 export type ScoresState = { [key: number]: number };
 
-
 export type Question = {
 	text: string;
 	options: string[];

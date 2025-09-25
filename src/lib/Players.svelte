@@ -78,7 +78,6 @@
 						if (select && timeSinceLastMove > 200) {
 							player.lastMovement = Date.now();
 							if (!!player.currentSelection || player.currentSelection == 0) {
-
 								scoresContext.scores[myGamepad.index] =
 									player.currentSelection === props.question.correctAnswerIndex && !player.selected
 										? scores[myGamepad.index] + 1

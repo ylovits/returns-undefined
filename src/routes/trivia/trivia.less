@@ -2,7 +2,6 @@
 @import url("$lib/_vars.less");
 @import url("$lib/prism-theme.less");
 
-
 #app .trivia {
 	position: inherit;
 
@@ -48,11 +47,9 @@
 				}
 			}
 		}
-
 	}
 
 	.question {
-
 		width: 90vw;
 		display: flex;
 		align-items: center;
@@ -85,6 +82,9 @@
 				word-wrap: break-word;
 				white-space: pre;
 				text-align: left;
+				code {
+					text-wrap: auto;
+				}
 			}
 		}
 
@@ -97,7 +97,6 @@
 				width: 80%;
 
 				.players {
-
 					position: absolute;
 					right: 2rem;
 					top: 0;
@@ -112,8 +111,6 @@
 						position: relative;
 					}
 				}
-
-
 			}
 
 			li {
@@ -147,9 +144,7 @@
 					left: 0;
 					right: 0;
 					bottom: 0;
-
 				}
-
 
 				.text {
 					color: #fff;

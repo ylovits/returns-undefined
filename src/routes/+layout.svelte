@@ -33,7 +33,6 @@
 	});
 
 	onMount(() => {
-		
 		const existingGamePads = navigator.getGamepads();
 		if (existingGamePads.length > 0) {
 			existingGamePads.forEach((gamepad, index) => {
