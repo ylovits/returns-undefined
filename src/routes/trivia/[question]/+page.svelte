@@ -6,6 +6,7 @@
 	import "../trivia.less";
 	import type { PlayersState, ScoresState } from "$types";
 	import useLocalStorage from "$lib/storage.svelte";
+	import { processQuestionText } from "$lib/syntax-highlighting";
 
 	const { players } = getContext<{ players: PlayersState }>("players");
 	const scoresContext = getContext<{ scores: ScoresState }>("scores");
@@ -25,6 +26,8 @@
 	let allAnswered = $derived<boolean>(readyPlayers === Object.keys(players).length);
 
 	let buttonText = $derived<string>(!allAnswered ? "Waiting..." : "Next Question");
+
+	let highlightedQuestionText = $derived<string>(processQuestionText(data.question.text));
 
 	const getClasses = (i: number) => {
 		const correct = readyPlayers > 0 && allAnswered && data.question.correctAnswerIndex === i;
@@ -60,7 +63,7 @@
 
 <Score scores={score.value} {players} />
 <div class="question">
-	<h1>{@html data.question.text}</h1>
+	<h1>{@html highlightedQuestionText}</h1>
 
 	<span class="answers-wrapper">
 		<Players pageName="trivia" {answerElements} {wrapperElm} question={data.question} />

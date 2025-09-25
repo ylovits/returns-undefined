@@ -1,47 +1,125 @@
-# Svelte + TS + Vite
+# Returns Undefined
 
-This template should help get you started developing with Svelte and TypeScript in Vite.
+A multiplayer JavaScript trivia game built with SvelteKit 5 and TypeScript. Test your knowledge of JavaScript's quirky behavior with gamepad controllers!
 
-## Recommended IDE Setup
+## 🎮 Game Features
 
-[VS Code](https://code.visualstudio.com/) + [Svelte](https://marketplace.visualstudio.com/items?itemName=svelte.svelte-vscode).
+- **Multiplayer Support**: Up to 4 players using gamepad controllers
+- **JavaScript Trivia**: Challenging questions about JavaScript's unusual behaviors
+- **Syntax Highlighting**: Code snippets are highlighted with Prism.js for better readability
+- **Real-time Scoring**: Track scores across multiple rounds
+- **Retro Aesthetic**: Pixelated styling with custom filters and animations
 
-## Need an official Svelte framework?
+## 🛠️ Development Setup
 
-Check out [SvelteKit](https://github.com/sveltejs/kit#readme), which is also powered by Vite. Deploy anywhere with its serverless-first approach and adapt to various platforms, with out of the box support for TypeScript, SCSS, and Less, and easily-added support for mdsvex, GraphQL, PostCSS, Tailwind CSS, and more.
+### Prerequisites
 
-## Technical considerations
+This project uses [Volta](https://volta.sh/) to manage Node.js and package manager versions. Install Volta first:
 
-**Why use this over SvelteKit?**
+```bash
+# Install Volta (visit https://volta.sh/ for platform-specific instructions)
+curl https://get.volta.sh | bash
 
-- It brings its own routing solution which might not be preferable for some users.
-- It is first and foremost a framework that just happens to use Vite under the hood, not a Vite app.
-
-This template contains as little as possible to get started with Vite + TypeScript + Svelte, while taking into account the developer experience with regards to HMR and intellisense. It demonstrates capabilities on par with the other `create-vite` templates and is a good starting point for beginners dipping their toes into a Vite + Svelte project.
-
-Should you later need the extended capabilities and extensibility provided by SvelteKit, the template has been structured similarly to SvelteKit so that it is easy to migrate.
-
-**Why `global.d.ts` instead of `compilerOptions.types` inside `jsconfig.json` or `tsconfig.json`?**
-
-Setting `compilerOptions.types` shuts out all other types not explicitly listed in the configuration. Using triple-slash references keeps the default TypeScript setting of accepting type information from the entire workspace, while also adding `svelte` and `vite/client` type information.
-
-**Why include `.vscode/extensions.json`?**
-
-Other templates indirectly recommend extensions via the README, but this file allows VS Code to prompt the user to install the recommended extension upon opening the project.
-
-**Why enable `allowJs` in the TS template?**
-
-While `allowJs: false` would indeed prevent the use of `.js` files in the project, it does not prevent the use of JavaScript syntax in `.svelte` files. In addition, it would force `checkJs: false`, bringing the worst of both worlds: not being able to guarantee the entire codebase is TypeScript, and also having worse typechecking for the existing JavaScript. In addition, there are valid use cases in which a mixed codebase may be relevant.
-
-**Why is HMR not preserving my local component state?**
-
-HMR state preservation comes with a number of gotchas! It has been disabled by default in both `svelte-hmr` and `@sveltejs/vite-plugin-svelte` due to its often surprising behavior. You can read the details [here](https://github.com/rixo/svelte-hmr#svelte-hmr).
-
-If you have state that's important to retain within a component, consider creating an external store which would not be replaced by HMR.
-
-```ts
-// store.ts
-// An extremely simple external store
-import { writable } from 'svelte/store'
-export default writable(0)
+# On Windows, use the installer from https://volta.sh/
 ```
+
+### Getting Started
+
+Once Volta is installed, simply run:
+
+```bash
+# Clone and enter the project directory
+cd returns-undefined
+
+# Volta will automatically use the correct Node.js and pnpm versions
+# Install dependencies
+pnpm install
+
+# Start development server
+pnpm run dev
+```
+
+**Note**: Volta will automatically:
+- Install and use Node.js v22.13.1
+- Install and use pnpm v10.17.1
+- Ensure all team members use the same versions
+
+### Available Scripts
+
+- **`pnpm run dev`** - Start development server
+- **`pnpm run build`** - Build for production
+- **`pnpm run preview`** - Preview production build
+- **`pnpm run check`** - Run TypeScript type checking
+- **`pnpm run check:watch`** - Watch mode type checking
+- **`pnpm run lint`** - Run linting and formatting checks
+- **`pnpm run format`** - Format code with Prettier
+
+## 🎯 How to Play
+
+1. Connect up to 4 gamepad controllers
+2. Players appear automatically when controllers are detected
+3. Navigate answer options using the gamepad directional controls
+4. Select answers and wait for all players to respond
+5. See results with correct answers highlighted
+6. Continue through questions to build your score!
+
+## 📁 Project Structure
+
+```
+src/
+├── lib/                    # Shared components and utilities
+│   ├── Players.svelte     # Player rendering and gamepad input
+│   ├── Player.svelte      # Individual player component
+│   ├── Score.svelte       # Score display
+│   ├── gamepad.ts         # Gamepad API utilities
+│   ├── players.ts         # Player state management
+│   ├── storage.svelte.ts  # localStorage wrapper
+│   ├── syntax-highlighting.ts # Prism.js integration
+│   └── types.ts           # TypeScript definitions
+├── routes/                # SvelteKit routes
+│   ├── +layout.svelte     # Global layout and state
+│   ├── +page.svelte       # Landing page
+│   └── trivia/            # Trivia game routes
+│       ├── +page.svelte           # Practice question
+│       ├── [question]/+page.svelte # Dynamic question routes
+│       └── questions.sever.ts     # Question data
+└── styles/                # Global styles and themes
+```
+
+## 🎨 Technology Stack
+
+- **Frontend**: SvelteKit 5 with TypeScript
+- **Styling**: Less with custom CSS filters and animations
+- **Input**: Web Gamepad API for controller support
+- **Syntax Highlighting**: Prism.js for JavaScript code snippets
+- **Build Tool**: Vite
+- **Package Manager**: pnpm (managed by Volta)
+
+## 🚀 Deployment
+
+```bash
+# Build for production
+pnpm run build
+
+# The built files will be in the `build` directory
+# Deploy using your preferred static hosting service
+```
+
+## 🤝 Contributing
+
+1. Ensure you have Volta installed
+2. Clone the repository
+3. Run `pnpm install` (Volta handles the rest)
+4. Make your changes
+5. Run `pnpm run lint` and `pnpm run check` before committing
+
+## 📝 Adding Questions
+
+Questions are stored in `src/routes/trivia/questions.sever.ts`. Each question should have:
+
+- Descriptive text with code snippets in `<pre class='code'>` tags
+- Exactly 4 answer options
+- A randomized `correctAnswerIndex`
+- Proper TypeScript typing
+
+The syntax highlighting system will automatically highlight JavaScript code in `<pre class='code'>` blocks.

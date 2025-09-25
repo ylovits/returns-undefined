@@ -4,6 +4,7 @@
 	import { getContext } from "svelte";
 	import { goto } from "$app/navigation";
 	import useLocalStorage from "$lib/storage.svelte";
+	import { processQuestionText } from "$lib/syntax-highlighting";
 
 	import "./trivia.less";
 
@@ -29,6 +30,8 @@
 	);
 
 	let buttonText = $derived<string>(!allAnswered ? "Waiting..." : allCorrect ? "Start Game" : "Try Again");
+
+	let highlightedQuestionText = $derived<string>(processQuestionText(data.question.text));
 
 	const resetStage = () => {
 		let currentScore = score.value || {};
@@ -57,7 +60,7 @@
 </script>
 
 <div class="question">
-	<h1>{data.question.text}</h1>
+	<h1>{@html highlightedQuestionText}</h1>
 	<span class="answers-wrapper">
 		<Players pageName="trivia" {answerElements} {wrapperElm} question={data.question} />
 		<ul class="answers" bind:this={wrapperElm}>
