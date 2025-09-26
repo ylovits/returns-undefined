@@ -24,7 +24,7 @@
 	// Calculate dynamic font size based on remaining time
 	const getDynamicFontSize = (timeRemaining: number, totalTime: number) => {
 		const minSize = 1.3; // Starting size in rem
-		const maxSize = 3.0;  // Ending size in rem
+		const maxSize = 4.0;  // Ending size in rem
 
 		// Calculate progress (0 = start, 1 = end)
 		const progress = totalTime > 0 ? (totalTime - timeRemaining) / totalTime : 0;
