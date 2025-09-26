@@ -6,8 +6,10 @@
 		localStorage.removeItem("score");
 		localStorage.removeItem("gameState");
 
-		// Navigate back to home page
-		goto("/");
+		// Navigate back to home page and then reload
+		goto("/").then(() => {
+			window.location.reload();
+		});
 	};
 </script>
 
@@ -24,12 +26,16 @@
 		background: transparent;
 		border: none;
 		cursor: pointer;
-		filter: url(#pixelate-xs);
+		filter: url(#pixelate-xs) opacity(0.5);
 
 		img {
 			width: 32px;
 			height: 32px;
 			display: block;
 		}
+
+        &:hover {
+            filter: opacity(1);
+        }
 	}
 </style>
