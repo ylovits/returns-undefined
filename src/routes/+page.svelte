@@ -73,6 +73,7 @@
 
 <Players pageName="landing" />
 
+<h3 class="subtitle">Test your controllers and click continue when you are ready</h3>
 <div class="timer-settings">
     <div class="timer-settings-background"></div>
 	<label class="timer-checkbox">
