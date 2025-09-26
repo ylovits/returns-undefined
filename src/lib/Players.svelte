@@ -31,7 +31,19 @@
 			players = playersContext.players || {};
 			// let currentScore = score.value || {};
 			scores = scoresContext.scores || {};
-			const currentReadyCheckCount = getReadyCheckCount();
+
+			// Calculate actual ready count from player states to prevent race conditions
+			const actualReadyCount = Object.keys(players).reduce((count, playerKey) => {
+				const player = players[Number(playerKey)];
+				return count + (player.active && player.selected ? 1 : 0);
+			}, 0);
+
+			// Sync the ready count if it's out of sync
+			const storedReadyCount = getReadyCheckCount();
+			if (actualReadyCount !== storedReadyCount) {
+				console.log(`Syncing ready count: stored=${storedReadyCount}, actual=${actualReadyCount}`);
+				setReadyCheckCount(actualReadyCount);
+			}
 
 			Object.keys(players).forEach((playerKey) => {
 				const playerIndex = Number(playerKey);
@@ -95,11 +107,15 @@
 										? scores[myGamepad.index] + 1
 										: scores[myGamepad.index];
 
-								if (!player.selected) setReadyCheckCount(currentReadyCheckCount + 1);
+								if (!player.selected) {
+									const liveReadyCount = getReadyCheckCount();
+									setReadyCheckCount(liveReadyCount + 1);
+								}
 								player.selected = true;
 							} else {
 								player.selected = false;
-								setReadyCheckCount(currentReadyCheckCount - 1);
+								const liveReadyCount = getReadyCheckCount();
+								setReadyCheckCount(liveReadyCount - 1);
 							}
 						}
 					}
