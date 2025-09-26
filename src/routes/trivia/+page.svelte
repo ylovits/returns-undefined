@@ -39,6 +39,16 @@
 
 	let highlightedQuestionText = $derived<string>(processQuestionText(data.question.text));
 
+	const getClasses = (i: number) => {
+		const correct = readyPlayers > 0 && allAnswered && data.question.correctAnswerIndex === i;
+		const selected = Object.keys(players).some((playerKey) => players[Number(playerKey)].currentSelection === i);
+		const answered = Object.keys(players).some(
+			(playerKey) => players[Number(playerKey)].currentSelection === i && players[Number(playerKey)].selected
+		);
+		let classes = `${correct ? "correct" : ""} ${selected ? "selected" : ""} ${answered ? "answered" : ""}`;
+		return classes;
+	};
+
 	const resetStage = () => {
 		let currentScore = score.value || {};
 
@@ -117,7 +127,7 @@
 						onclick={() => handleAnswerClick(i)}
 						type="button"
 					>
-						<span class="back"></span>
+						<span class={`back ${getClasses(i)}`}></span>
 						<p class="text">{option}</p>
 					</button>
 				</li>
