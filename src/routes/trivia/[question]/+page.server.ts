@@ -10,6 +10,7 @@ export function load({ params }) {
 
 	return {
 		question,
+		questionNumber: questionIndex,
 		nextPage: Number(params.question) + 1,
 		isLastQuestion,
 		totalQuestions: questions.length,

@@ -2,7 +2,7 @@
 	import { getContext, onMount } from "svelte";
 	import { goto } from "$app/navigation";
 	import Player from "$lib/Player.svelte";
-	import type { PlayersState, ScoresState } from "$types";
+	import type { PlayersState, ScoresState, GameState } from "$types";
 	import useLocalStorage from "$lib/storage.svelte";
 	import { shapes } from "$lib/players";
 	import "../trivia.less";
@@ -11,6 +11,13 @@
 
 	const { players } = getContext<{ players: PlayersState }>("players");
 	const scoresContext = getContext<{ scores: ScoresState }>("scores");
+	const { gameState, updateGameState } = getContext<{
+		gameState: GameState;
+		startTimer: () => void;
+		stopTimer: () => void;
+		endGame: () => void;
+		updateGameState: (updates: Partial<GameState>) => void;
+	}>("gameState");
 	const score = useLocalStorage("score");
 
 	let { data } = $props();
@@ -26,19 +33,24 @@
 	};
 
 	let sortedResults = $derived.by(() => {
+		// Use the actual number of questions answered, considering timer might have ended game early
+		const actualQuestionsCount = gameState.timerEnabled && gameState.gameEnded
+			? gameState.questionsAnswered
+			: data.totalQuestions;
+
 		const playerResults = Object.keys(players).map((playerKey) => {
 			const player = players[Number(playerKey)];
 			const playerScore = score.value?.[Number(playerKey)] || 0;
 			const correctAnswers = playerScore;
-			const incorrectAnswers = data.totalQuestions - correctAnswers;
+			const incorrectAnswers = actualQuestionsCount - correctAnswers;
 
 			return {
 				player,
 				playerIndex: Number(playerKey),
 				correctAnswers,
 				incorrectAnswers,
-				totalQuestions: data.totalQuestions,
-				percentage: Math.round((correctAnswers / data.totalQuestions) * 100),
+				totalQuestions: actualQuestionsCount,
+				percentage: actualQuestionsCount > 0 ? Math.round((correctAnswers / actualQuestionsCount) * 100) : 0,
 			};
 		});
 
@@ -94,6 +106,15 @@
 
 		scoresContext.scores = clearedScores;
 		score.value = clearedScores;
+
+		// Reset game state
+		updateGameState({
+			timerEnabled: false,
+			timerMinutes: 15,
+			timeRemaining: 0,
+			questionsAnswered: 0,
+			gameEnded: false
+		});
 
 		// Go back to landing page
 		goto("/");

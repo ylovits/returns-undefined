@@ -4,7 +4,7 @@
 	import { goto } from "$app/navigation";
 	import { getContext, onMount } from "svelte";
 	import "../trivia.less";
-	import type { PlayersState, ScoresState } from "$types";
+	import type { PlayersState, ScoresState, GameState } from "$types";
 	import useLocalStorage from "$lib/storage.svelte";
 	import { processQuestionText } from "$lib/syntax-highlighting";
 	import confetti from "canvas-confetti";
@@ -17,6 +17,19 @@
 		setReadyCheckCount: (count: number) => void;
 		getReadyCheckCount: () => number;
 	}>("readyCheck");
+
+	const gameStateContext = getContext<{
+		gameState: GameState;
+		getGameState: () => GameState;
+		startTimer: () => void;
+		stopTimer: () => void;
+		endGame: () => void;
+		updateGameState: (updates: Partial<GameState>) => void;
+	}>("gameState");
+
+	// Use the getter function for reactive access
+	const gameState = $derived(gameStateContext.getGameState());
+	const { startTimer, updateGameState } = gameStateContext;
 
 	let { data } = $props();
 	let readyPlayers = $derived<number>(getReadyCheckCount());
@@ -104,12 +117,26 @@
 		updateScore();
 		resetPlayerAnswers();
 
-		if (data.isLastQuestion) {
+		updateGameState({ questionsAnswered: gameState.questionsAnswered + 1 });
+
+		if (data.isLastQuestion || gameState.gameEnded) {
 			goto("/trivia/results");
 		} else {
 			goto("/trivia/" + data.nextPage);
 		}
 	};
+
+	onMount(() => {
+		// Start timer on first question (question 0)
+		if (data.questionNumber === 0 && gameState.timerEnabled && gameState.timeRemaining > 0) {
+			startTimer();
+		}
+
+		// Redirect to results if game has already ended
+		if (gameState.gameEnded) {
+			goto("/trivia/results");
+		}
+	});
 </script>
 
 <Score scores={score.value} {players} />

@@ -22,3 +22,11 @@ export type Question = {
 	options: string[];
 	correctAnswerIndex: number;
 };
+
+export type GameState = {
+	timerEnabled: boolean;
+	timerMinutes: number;
+	timeRemaining: number;
+	questionsAnswered: number;
+	gameEnded: boolean;
+};
