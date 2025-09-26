@@ -123,8 +123,10 @@
 			gameEnded: false
 		});
 
-		// Go back to landing page
-		goto("/");
+		// Go back to landing page and reload
+		goto("/").then(() => {
+			window.location.reload();
+		});
 	};
 </script>
 
