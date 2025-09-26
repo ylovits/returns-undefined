@@ -37,7 +37,13 @@
 	let answerElements = $state<HTMLLIElement[]>([]);
 	let wrapperElm = $state<HTMLSpanElement>();
 
-	let allAnswered = $derived<boolean>(readyPlayers === Object.keys(players).length);
+	let activePlayers = $derived<number>(
+		Object.keys(players).filter((playerKey) => {
+			const player = players[Number(playerKey)];
+			return player.active;
+		}).length
+	);
+	let allAnswered = $derived<boolean>(readyPlayers === activePlayers);
 
 	let buttonText = $derived<string>(
 		!allAnswered ? "Waiting..." : data.isLastQuestion ? "Show Results" : "Next Question"
@@ -109,6 +115,44 @@
 		});
 	};
 
+	// Handle mouse click on answer options for mouse players
+	const handleAnswerClick = (answerIndex: number) => {
+		// Only handle clicks if we have mouse players
+		const mouseIndex = 4; // Mouse player is always at index 4
+		const mousePlayer = players[mouseIndex];
+		if (!mousePlayer?.active || !mousePlayer.isMouse || mousePlayer.selected) return;
+
+		if (mousePlayer) {
+			const playerIndex = mouseIndex;
+
+			// Update selection and position - move player to selected answer
+			players[playerIndex].currentSelection = answerIndex;
+
+			// Calculate position based on answer index (similar to gamepad movement)
+			if (answerElements.length > 0) {
+				const answerPositions = answerElements.map((elm) => {
+					return elm.getBoundingClientRect().top - (wrapperElm?.getBoundingClientRect().top || 0);
+				});
+				const multiplier = 1 / 2; // Same multiplier as used in Players.svelte for quiz pages
+				players[playerIndex].y = answerPositions[answerIndex] * multiplier;
+				players[playerIndex].x = 0; // Keep x centered
+			}
+
+			// Update score (same logic as gamepad players)
+			if (scoresContext.scores) {
+				scoresContext.scores[playerIndex] =
+					answerIndex === data.question.correctAnswerIndex && !players[playerIndex].selected
+						? (scoresContext.scores[playerIndex] || 0) + 1
+						: (scoresContext.scores[playerIndex] || 0);
+			}
+
+			// Mark as selected and update ready count
+			players[playerIndex].selected = true;
+			const currentReady = getReadyCheckCount();
+			setReadyCheckCount(currentReady + 1);
+		}
+	};
+
 	const updateScore = () => {
 		score.value = scoresContext.scores;
 	};
@@ -147,9 +191,19 @@
 		<Players pageName="trivia" {answerElements} {wrapperElm} question={data.question} />
 		<ul class="answers" bind:this={wrapperElm}>
 			{#each data.question.options as option, i}
-				<li id={`answer-${i + 1}`} bind:this={answerElements[i]}>
-					<span class={`back ${getClasses(i)}`}></span>
-					<p class="text">{option}</p>
+				<li
+					id={`answer-${i + 1}`}
+					bind:this={answerElements[i]}
+					class="answer-option"
+				>
+					<button
+						class="answer-button"
+						onclick={() => handleAnswerClick(i)}
+						type="button"
+					>
+						<span class={`back ${getClasses(i)}`}></span>
+						<p class="text">{option}</p>
+					</button>
 				</li>
 			{/each}
 		</ul>

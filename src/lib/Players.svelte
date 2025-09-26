@@ -34,8 +34,20 @@
 			const currentReadyCheckCount = getReadyCheckCount();
 
 			Object.keys(players).forEach((playerKey) => {
-				const myGamepad = navigator.getGamepads()[Number(playerKey)];
-				if (myGamepad) {
+				const playerIndex = Number(playerKey);
+				const player = players[playerIndex];
+				const myGamepad = navigator.getGamepads()[playerIndex];
+
+				// Handle mouse players separately
+				if (player.isMouse && !myGamepad) {
+					const landingPage = props.pageName === "landing";
+
+					// For mouse players, position is already handled by click handlers
+					// Just ensure position is maintained when selected
+					if (!landingPage && answerPositions.length > 0 && !player.selected) {
+						player.y = answerPositions[player.currentSelection] * multiplier;
+					}
+				} else if (myGamepad) {
 					const player = players[myGamepad.index];
 
 					const landingPage = props.pageName === "landing";

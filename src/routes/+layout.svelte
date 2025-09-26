@@ -9,6 +9,7 @@
 	import { setContext } from "svelte";
 	import useLocalStorage from "$lib/storage.svelte";
 	import { goto } from "$app/navigation";
+import { page } from "$app/stores";
 
 	let props = $props();
 
@@ -35,6 +36,31 @@
 
 	const getReadyCheckCount = () => readyCheckCount;
 
+	// Check if we need to create a mouse player (no controllers connected)
+	const checkForMousePlayer = () => {
+		const hasActiveControllers = Object.values(players).some(player => player.active && !player.isMouse);
+
+		if (!hasActiveControllers) {
+			// Create mouse player at index 4 (mouse shape in shapes array)
+			const mouseIndex = 4;
+			if (!players[mouseIndex] || !players[mouseIndex].isMouse) {
+				players[mouseIndex] = {
+					...initialPlayerObject,
+					name: "mouse",
+					active: true,
+					isMouse: true,
+				};
+				scores[mouseIndex] = scores[mouseIndex] || 0;
+			}
+		} else {
+			// Remove mouse player if controllers are connected
+			const mouseIndex = 4;
+			if (players[mouseIndex]?.isMouse) {
+				players[mouseIndex].active = false;
+			}
+		}
+	};
+
 	const startTimer = () => {
 		if (gameState.timerEnabled && gameState.timeRemaining > 0) {
 			timerInterval = setInterval(() => {
@@ -42,7 +68,11 @@
 				gameStateStorage.value = { ...gameState };
 
 				if (gameState.timeRemaining <= 0) {
-					endGame();
+					// Try to extract current question index from URL
+					const currentUrl = $page.url.pathname;
+					const questionMatch = currentUrl.match(/\/trivia\/(\d+)/);
+					const questionIndex = questionMatch ? parseInt(questionMatch[1]) : undefined;
+					endGame(questionIndex);
 				}
 			}, 1000);
 		}
@@ -55,8 +85,12 @@
 		}
 	};
 
-	const endGame = () => {
+	const endGame = (currentQuestionIndex?: number) => {
 		gameState.gameEnded = true;
+		// If we know the current question index, update questionsAnswered
+		if (currentQuestionIndex !== undefined) {
+			gameState.questionsAnswered = currentQuestionIndex + 1; // +1 because index is 0-based
+		}
 		stopTimer();
 		gameStateStorage.value = { ...gameState };
 		goto("/trivia/results");
@@ -78,7 +112,7 @@
 	// Create a getter function for reactive access to gameState
 	const getGameState = () => gameState;
 	// svelte-ignore state_referenced_locally
-	setContext("gameState", { gameState, getGameState, startTimer, stopTimer, endGame, updateGameState });
+	setContext("gameState", { gameState, getGameState, startTimer, stopTimer, endGame: () => endGame(), updateGameState });
 
 	$effect(() => {
 		if (props.data.pageName) currentPage = props.data.pageName;
@@ -103,13 +137,17 @@
 			existingGamePads.forEach((gamepad, index) => {
 				if (gamepad) {
 					players[index] = {
-						...players[index],
+						...initialPlayerObject,
+						name: shapes[index],
 						gamepad,
 						active: true,
 					};
 				}
 			});
 		}
+
+		// Check if we need a mouse player after processing existing gamepads
+		checkForMousePlayer();
 
 		const handleGamepadConnected = (event: GamepadEvent) => {
 			players[event.gamepad.index] = {
@@ -119,6 +157,9 @@
 				gamepad: event.gamepad,
 			};
 			scores[event.gamepad.index] = scores[event.gamepad.index] || 0;
+
+			// Check if we need to remove mouse player
+			checkForMousePlayer();
 		};
 
 		const handleGamepadDisconnected = (event: GamepadEvent) => {
@@ -130,6 +171,9 @@
 				dc.x = 0;
 				dc.y = 0;
 			}
+
+			// Check if we need to create mouse player
+			checkForMousePlayer();
 		};
 
 		window.addEventListener("gamepadconnected", handleGamepadConnected);

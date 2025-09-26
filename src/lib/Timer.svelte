@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { getContext } from "svelte";
+	import { page } from "$app/stores";
 	import type { GameState } from "$types";
 
 	const gameStateContext = getContext<{
@@ -20,12 +21,25 @@
 		return `${minutes.toString().padStart(2, '0')}:${remainingSeconds.toString().padStart(2, '0')}`;
 	};
 
+	// Calculate dynamic font size based on remaining time
+	const getDynamicFontSize = (timeRemaining: number, totalTime: number) => {
+		const minSize = 1.3; // Starting size in rem
+		const maxSize = 3.0;  // Ending size in rem
+
+		// Calculate progress (0 = start, 1 = end)
+		const progress = totalTime > 0 ? (totalTime - timeRemaining) / totalTime : 0;
+
+		// Linear interpolation between min and max size
+		return minSize + (progress * (maxSize - minSize));
+	};
+
 </script>
 
-{#if gameState.timerEnabled && gameState.timeRemaining >= 0}
-	<div class="timer-display" class:warning={gameState.timeRemaining <= 30} class:danger={gameState.timeRemaining <= 10}>
-		<div class="timer-icon">⏱️</div>
-		<div class="timer-text">{formatTime(gameState.timeRemaining)}</div>
+{#if gameState.timerEnabled && gameState.timeRemaining >= 0 && !$page.url.pathname.includes('/results')}
+	{@const totalTime = gameState.timerMinutes * 60}
+	{@const fontSize = getDynamicFontSize(gameState.timeRemaining, totalTime)}
+	<div class="timer-display" class:warning={gameState.timeRemaining <= 30 && gameState.timeRemaining > 10} class:danger={gameState.timeRemaining <= 10}>
+		<div class="timer-text" style="font-size: {fontSize}rem;">{formatTime(gameState.timeRemaining)}</div>
 	</div>
 {/if}
 
@@ -61,13 +75,11 @@
 			animation: urgent-pulse 1s infinite;
 		}
 
-		.timer-icon {
-			font-size: 20px;
-		}
-
 		.timer-text {
-			font-size: 20px;
+            font-family: 'Pixelon', monospace;
 			letter-spacing: 1px;
+            z-index: 1001;
+			transition: font-size 0.1s ease-out;
 		}
 	}
 

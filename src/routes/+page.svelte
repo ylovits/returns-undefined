@@ -17,7 +17,7 @@
 	let timerMinutes = $state(15);
 
 	let allActive = $derived(
-		Object.keys(playersContext.players).every((playerKey) => {
+		Object.keys(playersContext.players).some((playerKey) => {
 			const player = playersContext.players[Number(playerKey)];
 			return player.active;
 		})
@@ -28,6 +28,17 @@
 	);
 
 	let canContinue = $derived(allActive && isTimerValid);
+
+	let hasControllers = $derived(
+		Object.keys(playersContext.players).some((playerKey) => {
+			const player = playersContext.players[Number(playerKey)];
+			return player.active && !player.isMouse;
+		})
+	);
+
+	let subtitleMessage = $derived(
+		hasControllers ? "Test your controllers and click continue when you are ready" : "Just click continue when you are ready"
+	);
 
 	onMount(() => {
 		score.value = null;
@@ -73,13 +84,13 @@
 
 <Players pageName="landing" />
 
-<h3 class="subtitle">Test your controllers and click continue when you are ready</h3>
+<h3 class="subtitle">{subtitleMessage}</h3>
 <div class="timer-settings">
     <div class="timer-settings-background"></div>
 	<label class="timer-checkbox">
 		<input type="checkbox" bind:checked={timerEnabled} />
 		<span class="checkmark"></span>
-		Enable time limit
+		Set a time limit
 	</label>
 
 	{#if timerEnabled}

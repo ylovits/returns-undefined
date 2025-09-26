@@ -5,6 +5,7 @@ export type Player = {
 	active: boolean;
 	pressing: boolean;
 	gamepad: Gamepad | null;
+	isMouse: boolean; // True if this is a mouse-controlled player
 	x: number;
 	y: number;
 	lastMovement: number;

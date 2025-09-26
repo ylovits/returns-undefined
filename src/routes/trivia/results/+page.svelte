@@ -18,6 +18,8 @@
 		endGame: () => void;
 		updateGameState: (updates: Partial<GameState>) => void;
 	}>("gameState");
+
+	const gameStateStorage = useLocalStorage("gameState");
 	const score = useLocalStorage("score");
 
 	let { data } = $props();
@@ -33,26 +35,31 @@
 	};
 
 	let sortedResults = $derived.by(() => {
-		// Use the actual number of questions answered, considering timer might have ended game early
-		const actualQuestionsCount = gameState.timerEnabled && gameState.gameEnded
-			? gameState.questionsAnswered
-			: data.totalQuestions;
+		// Use questionsAnswered from storage first, then from context, then fallback to total
+		const storageState = gameStateStorage.value;
+		const questionsFromStorage = storageState?.questionsAnswered || 0;
+		const questionsFromContext = gameState.questionsAnswered || 0;
+		const questionsPlayersSaw = questionsFromStorage > 0 ? questionsFromStorage :
+									questionsFromContext > 0 ? questionsFromContext :
+									data.totalQuestions;
 
-		const playerResults = Object.keys(players).map((playerKey) => {
-			const player = players[Number(playerKey)];
-			const playerScore = score.value?.[Number(playerKey)] || 0;
-			const correctAnswers = playerScore;
-			const incorrectAnswers = actualQuestionsCount - correctAnswers;
+		const playerResults = Object.keys(players)
+			.filter((playerKey) => players[Number(playerKey)].active)
+			.map((playerKey) => {
+				const player = players[Number(playerKey)];
+				const playerScore = score.value?.[Number(playerKey)] || 0;
+				const correctAnswers = playerScore;
+				const incorrectAnswers = questionsPlayersSaw - correctAnswers;
 
-			return {
-				player,
-				playerIndex: Number(playerKey),
-				correctAnswers,
-				incorrectAnswers,
-				totalQuestions: actualQuestionsCount,
-				percentage: actualQuestionsCount > 0 ? Math.round((correctAnswers / actualQuestionsCount) * 100) : 0,
-			};
-		});
+				return {
+					player,
+					playerIndex: Number(playerKey),
+					correctAnswers,
+					incorrectAnswers,
+					totalQuestions: questionsPlayersSaw,
+					percentage: questionsPlayersSaw > 0 ? Math.round((correctAnswers / questionsPlayersSaw) * 100) : 0,
+				};
+			});
 
 		// Sort by score (highest first)
 		return playerResults.sort((a, b) => b.correctAnswers - a.correctAnswers);
@@ -152,8 +159,13 @@
 						<span class="correct">✅ {result.correctAnswers}</span>
 						<span class="incorrect">❌ {result.incorrectAnswers}</span>
 					</div>
-					<div class="score-points">{result.correctAnswers} correct</div>
-					<div class="total">out of {result.totalQuestions} questions</div>
+                    <div class="detailed-score">
+                        <div class="score-points">{result.correctAnswers} correct</div>
+                        <div class="total">out of {result.totalQuestions} questions answered</div>
+                    </div>
+					{#if result.totalQuestions < data.totalQuestions}
+						<div class="total-available">({data.totalQuestions} total questions available)</div>
+					{/if}
 				</div>
 			</div>
 		{/each}

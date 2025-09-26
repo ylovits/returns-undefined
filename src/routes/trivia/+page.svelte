@@ -21,11 +21,17 @@
 
 	let answerElements = $state<HTMLLIElement[]>([]);
 	let wrapperElm = $state<HTMLSpanElement>();
-	let allAnswered = $derived<boolean>(readyPlayers === Object.keys(players).length);
+	let activePlayers = $derived<number>(
+		Object.keys(players).filter((playerKey) => {
+			const player = players[Number(playerKey)];
+			return player.active;
+		}).length
+	);
+	let allAnswered = $derived<boolean>(readyPlayers === activePlayers);
 	let allCorrect = $derived<boolean>(
 		Object.keys(players).every((playerKey) => {
 			const player = players[Number(playerKey)];
-			return player.currentSelection === data.question.correctAnswerIndex;
+			return !player.active || player.currentSelection === data.question.correctAnswerIndex;
 		})
 	);
 
@@ -49,6 +55,34 @@
 		score.value = currentScore;
 	};
 
+	// Handle mouse click on answer options for mouse players
+	const handleAnswerClick = (answerIndex: number) => {
+		// Only handle clicks if we have mouse players
+		const mouseIndex = 4; // Mouse player is always at index 4
+		const mousePlayer = players[mouseIndex];
+		if (!mousePlayer?.active || !mousePlayer.isMouse || mousePlayer.selected) return;
+
+		if (mousePlayer) {
+			const playerIndex = mouseIndex;
+			players[playerIndex].currentSelection = answerIndex;
+			players[playerIndex].selected = true;
+
+			// Calculate position based on answer index (similar to gamepad movement)
+			if (answerElements.length > 0) {
+				const answerPositions = answerElements.map((elm) => {
+					return elm.getBoundingClientRect().top - (wrapperElm?.getBoundingClientRect().top || 0);
+				});
+				const multiplier = 1 / 2; // Same multiplier as used in Players.svelte for quiz pages
+				players[playerIndex].y = answerPositions[answerIndex] * multiplier;
+				players[playerIndex].x = 0; // Keep x centered
+			}
+
+			// Update ready count
+			const currentReady = getReadyCheckCount();
+			setReadyCheckCount(currentReady + 1);
+		}
+	};
+
 	const handleClick = () => {
 		if (allAnswered && allCorrect) {
 			resetStage();
@@ -63,14 +97,33 @@
 	<h1>{@html highlightedQuestionText}</h1>
 	<span class="answers-wrapper">
 		<Players pageName="trivia" {answerElements} {wrapperElm} question={data.question} />
-		<ul class="answers" bind:this={wrapperElm}>
+		<!-- <ul class="answers" bind:this={wrapperElm}>
 			{#each data.question.options as option, i}
 				<li id={`answer-${i + 1}`} bind:this={answerElements[i]}>
 					<span class="back"></span>
 					<p class="text">{option}</p>
 				</li>
 			{/each}
+		</ul> -->
+		<ul class="answers" bind:this={wrapperElm}>
+			{#each data.question.options as option, i}
+				<li
+					id={`answer-${i + 1}`}
+					bind:this={answerElements[i]}
+					class="answer-option"
+				>
+					<button
+						class="answer-button"
+						onclick={() => handleAnswerClick(i)}
+						type="button"
+					>
+						<span class="back"></span>
+						<p class="text">{option}</p>
+					</button>
+				</li>
+			{/each}
 		</ul>
+
 	</span>
 </div>
 <button class="nextBtn" disabled={!allAnswered} onclick={() => handleClick()}>{buttonText}</button>

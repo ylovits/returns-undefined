@@ -40,6 +40,9 @@
 					margin: 0;
 					padding: 0;
 					filter: url(#pixelate-sm);
+                    &.pentagon {
+                        filter: url(#pixelate-xs);
+                    }
 				}
 
 				.points {
@@ -118,6 +121,41 @@
 				position: relative;
 				margin: 1rem 0rem;
 				padding: 1.5rem 2.5rem;
+
+				&.answer-option {
+					cursor: pointer;
+
+					&:hover:not(.answered) .back {
+						filter: brightness(0.7);
+					}
+
+					.answer-button {
+						background: none;
+						border: none;
+						width: 100%;
+						cursor: pointer;
+						display: block;
+						font-family: "Pixelon", monospace;
+						text-align: left;
+
+						&:focus {
+							outline: none;
+						}
+
+						.text {
+							color: #fff;
+							font-size: 3rem;
+							margin: 0;
+							padding: 0;
+							position: relative;
+							line-height: 2rem;
+							vertical-align: baseline;
+							max-width: calc(100% - 18rem);
+							z-index: 2;
+							font-family: "Pixelon", monospace;
+						}
+					}
+				}
 
 				.back {
 					background-color: @primary-d;

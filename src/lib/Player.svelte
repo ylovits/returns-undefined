@@ -10,6 +10,6 @@
 	style={`overflow: visible; ${x ? "transform: rotate(" + (x / Math.abs(x)) * multiplier + "deg)" + " translate(" + x * 2 + "px, " + y * 2 + "px)" : "transform: translate(" + x * 2 + "px, " + y * 2 + "px)"}`}
 >
 	<g>
-		{@html shapeSVGs[shape as Shapes]}
+		{@html shapeSVGs[shape] || shapeSVGs.triangle}
 	</g>
 </svg>

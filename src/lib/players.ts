@@ -4,6 +4,7 @@ export const initialPlayerObject = {
 	name: "",
 	active: false,
 	gamepad: null,
+	isMouse: false,
 	pressing: false,
 	x: 0,
 	y: 0,
@@ -12,13 +13,14 @@ export const initialPlayerObject = {
 	selected: false,
 };
 
-export const shapes = ["triangle", "circle", "hexagon", "square"];
+export const shapes = ["triangle", "circle", "hexagon", "square", "pentagon"];
 
-export const shapeSVGs: { [key in Shapes]: string } = {
+export const shapeSVGs: { [key: Shapes]: string } = {
 	triangle: '<polygon points="188.5,53.5 32.62,323.5 344.38,323.5 " />',
 	circle: '<circle cx="188.5" cy="188.5" r="135" />',
 	hexagon: '<polygon points="266.44,53.5 110.56,53.5 32.62,188.5 110.56,323.5 266.44,323.5 344.38,188.5 " />',
 	square: '<rect x="53.5" y="53.5" width="270" height="270" />',
+	pentagon: '<polygon points="188.5,53.5 323.5,146.69 273.19,291.31 103.81,291.31 53.5,146.69" />',
 };
 
 export const changeSelection = (direction: "up" | "down", player: Player, answersNo: number) => {
