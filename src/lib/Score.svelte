@@ -2,6 +2,7 @@
 	import type { Shapes } from "$types";
 	import { initialPlayerObject, shapes, shapeSVGs } from "./players";
 	let { scores, players } = $props();
+
 </script>
 
 <div class="score players">

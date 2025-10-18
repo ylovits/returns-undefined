@@ -6,6 +6,7 @@ export type Player = {
 	pressing: boolean;
 	gamepad: Gamepad | null;
 	isMouse: boolean; // True if this is a mouse-controlled player
+	manuallyAdded?: boolean; // True if this mouse player was manually added via + button
 	x: number;
 	y: number;
 	lastMovement: number;

@@ -10,9 +10,14 @@
 	const score = useLocalStorage("score");
 	let scores = $state<ScoresState>({});
 	let answerPositions = $state<number[]>([]);
+	let scoredPlayers = $state<Set<number>>(new Set()); // Track which players have been scored this question
 
 	const playersContext = getContext<{ players: PlayersState }>("players");
-	const scoresContext = getContext<{ scores: ScoresState }>("scores");
+	const scoresContext = getContext<{
+		scores: ScoresState;
+		displayScores: ScoresState;
+		updateDisplay: () => void;
+	}>("scores");
 	const { setReadyCheckCount, getReadyCheckCount } = getContext<{
 		setReadyCheckCount: (count: number) => void;
 		getReadyCheckCount: () => number;
@@ -22,19 +27,26 @@
 
 	const multiplier = props.pageName === "landing" ? 5 : 1 / 2;
 
+	// Reset scored players when question changes
+	$effect(() => {
+		if (props.question) {
+			scoredPlayers.clear();
+		}
+	});
+
 	onMount(() => {
 		if (!scoresContext.scores) {
 			scoresContext.scores = score.value;
 		}
 
 		let frame = requestAnimationFrame(function update() {
-			players = playersContext.players || {};
+			const contextPlayers = playersContext.players || {};
 			// let currentScore = score.value || {};
 			scores = scoresContext.scores || {};
 
 			// Calculate actual ready count from player states to prevent race conditions
-			const actualReadyCount = Object.keys(players).reduce((count, playerKey) => {
-				const player = players[Number(playerKey)];
+			const actualReadyCount = Object.keys(contextPlayers).reduce((count, playerKey) => {
+				const player = contextPlayers[Number(playerKey)];
 				return count + (player.active && player.selected ? 1 : 0);
 			}, 0);
 
@@ -45,9 +57,13 @@
 				setReadyCheckCount(actualReadyCount);
 			}
 
-			Object.keys(players).forEach((playerKey) => {
+			Object.keys(contextPlayers).forEach((playerKey) => {
 				const playerIndex = Number(playerKey);
-				const player = players[playerIndex];
+				const player = contextPlayers[playerIndex];
+
+				// Safety check - skip if player doesn't exist or isn't active
+				if (!player || !player.active) return;
+
 				const myGamepad = navigator.getGamepads()[playerIndex];
 
 				// Handle mouse players separately
@@ -60,13 +76,14 @@
 						player.y = answerPositions[player.currentSelection] * multiplier;
 					}
 				} else if (myGamepad) {
-					const player = players[myGamepad.index];
+					const gamepadPlayer = contextPlayers[myGamepad.index];
+					if (!gamepadPlayer || !gamepadPlayer.active) return;
 
 					const landingPage = props.pageName === "landing";
 					const { pressing, yAxisSum, xAxisSum } = mainControls(myGamepad);
 
 					if (landingPage) {
-						player.y = player.selected ? player.y : yAxisSum * 60;
+						gamepadPlayer.y = gamepadPlayer.selected ? gamepadPlayer.y : yAxisSum * 60;
 						if (pressing) {
 							myGamepad.vibrationActuator.playEffect("trigger-rumble", {
 								startDelay: 0,
@@ -74,8 +91,8 @@
 								weakMagnitude: 1,
 								strongMagnitude: 1,
 							});
-							player.x += Math.floor(Math.random() * 21 * multiplier) - 11 * multiplier;
-							player.y += Math.floor(Math.random() * 21 * multiplier) - 10 * multiplier;
+							gamepadPlayer.x += Math.floor(Math.random() * 21 * multiplier) - 11 * multiplier;
+							gamepadPlayer.y += Math.floor(Math.random() * 21 * multiplier) - 10 * multiplier;
 						}
 					} else {
 						if (!answerPositions.length && props.answerElements) {
@@ -85,42 +102,49 @@
 						}
 						const { moveDown, moveUp, select } = inQuizControls(myGamepad);
 						const now = Date.now();
-						const timeSinceLastMove = now - player.lastMovement;
+						const timeSinceLastMove = now - gamepadPlayer.lastMovement;
 
-						if (answerPositions && !player.selected) {
+						if (answerPositions && !gamepadPlayer.selected) {
 							if ((moveDown || moveUp) && timeSinceLastMove > 200) {
-								changeSelection(moveDown ? "down" : "up", player, answerPositions.length);
-								player.lastMovement = Date.now();
-								player.y = answerPositions[player.currentSelection] * multiplier;
+								changeSelection(moveDown ? "down" : "up", gamepadPlayer, answerPositions.length);
+								gamepadPlayer.lastMovement = Date.now();
+								gamepadPlayer.y = answerPositions[gamepadPlayer.currentSelection] * multiplier;
 							} else {
-								player.y = answerPositions[player.currentSelection] * multiplier;
+								gamepadPlayer.y = answerPositions[gamepadPlayer.currentSelection] * multiplier;
 							}
 						} else {
-							player.y = player.selected ? player.y : yAxisSum * 60;
+							gamepadPlayer.y = gamepadPlayer.selected ? gamepadPlayer.y : yAxisSum * 60;
 						}
 
 						if (select && timeSinceLastMove > 200) {
-							player.lastMovement = Date.now();
-							if (!!player.currentSelection || player.currentSelection == 0) {
-								scoresContext.scores[myGamepad.index] =
-									player.currentSelection === props.question.correctAnswerIndex && !player.selected
-										? scores[myGamepad.index] + 1
-										: scores[myGamepad.index];
+							gamepadPlayer.lastMovement = Date.now();
+							if (!!gamepadPlayer.currentSelection || gamepadPlayer.currentSelection == 0) {
+								// Only update score if not already scored this question (prevent multiple scoring)
+								if (!scoredPlayers.has(myGamepad.index)) {
+									// Don't count tutorial/practice questions (base /trivia page vs /trivia/[question])
+									const isTutorial = props.pageName === "trivia" && !window.location.pathname.match(/\/trivia\/\d+/);
+									const currentScore = scoresContext.scores[myGamepad.index] || 0;
+									const isCorrect = gamepadPlayer.currentSelection === props.question.correctAnswerIndex;
+									const newScore = isTutorial ? currentScore : (isCorrect ? currentScore + 1 : currentScore);
 
-								if (!player.selected) {
+
+									scoresContext.scores[myGamepad.index] = newScore;
+									scoredPlayers.add(myGamepad.index); // Mark this player as scored
+									// Note: Don't save to localStorage immediately to avoid spoiling answers for other players
+
 									const liveReadyCount = getReadyCheckCount();
 									setReadyCheckCount(liveReadyCount + 1);
 								}
-								player.selected = true;
+								gamepadPlayer.selected = true;
 							} else {
-								player.selected = false;
+								gamepadPlayer.selected = false;
 								const liveReadyCount = getReadyCheckCount();
 								setReadyCheckCount(liveReadyCount - 1);
 							}
 						}
 					}
 
-					player.x = landingPage ? xAxisSum * 12 * multiplier : player.x;
+					gamepadPlayer.x = landingPage ? xAxisSum * 12 * multiplier : gamepadPlayer.x;
 				}
 			});
 			// score.value = currentScore;
@@ -135,10 +159,10 @@
 </script>
 
 <div class={`players`}>
-	{#key players}
+	{#key playersContext.players}
 		{#each shapes as shape, i}
 			{@const { active, pressing, selected, x, y } =
-				players && players[i] && players[i].active ? players[i] : initialPlayerObject}
+				playersContext.players && playersContext.players[i] && playersContext.players[i].active ? playersContext.players[i] : initialPlayerObject}
 			{#if active}
 				<Player {active} {pressing} {selected} {x} {y} {shape} {multiplier} />
 			{/if}

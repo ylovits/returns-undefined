@@ -2,8 +2,8 @@ import type { Question } from "$types";
 
 export const readyCheck: Question = {
 	text: "Let's see if you got the controls. \nAre you ready to start the quiz?",
-	options: ["No", "Yes"],
-	correctAnswerIndex: 1,
+	options: ["No", "No", "Yes", "No"],
+	correctAnswerIndex: 2,
 };
 
 export const questions: Question[] = [
@@ -88,7 +88,7 @@ export const questions: Question[] = [
 		correctAnswerIndex: 2,
 	},
 	{
-		text: `<pre class='code'>Paul instanceof String</pre> returns:`,
+		text: `<pre class='code'>"cat" instanceof String</pre> returns:`,
 		options: [`undefined`, `true`, `false`, `null`],
 		correctAnswerIndex: 2,
 	},
@@ -113,7 +113,7 @@ export const questions: Question[] = [
 		correctAnswerIndex: 1,
 	},
 	{
-		text: `<pre class='code'>3 + ''</pre> returns:`,
+		text: `<pre class='code'>3 + ""</pre> returns:`,
 		options: [`3`, `'3'`, `NaN`, `undefined`],
 		correctAnswerIndex: 1,
 	},

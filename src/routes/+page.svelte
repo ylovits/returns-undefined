@@ -5,7 +5,7 @@
 	import { getContext, onMount } from "svelte";
 	import useLocalStorage from "$lib/storage.svelte";
 
-	const playersContext = getContext<{ players: PlayersState }>("players");
+	const playersContext = getContext<{ players: PlayersState; toggleMousePlayer: () => void }>("players");
 	const gameStateContext = getContext<{
 		gameState: GameState;
 		updateGameState: (updates: Partial<GameState>) => void;
@@ -27,8 +27,6 @@
 		!timerEnabled || (timerMinutes > 0 && timerMinutes <= 60)
 	);
 
-	let canContinue = $derived(allActive && isTimerValid);
-
 	let hasControllers = $derived(
 		Object.keys(playersContext.players).some((playerKey) => {
 			const player = playersContext.players[Number(playerKey)];
@@ -36,8 +34,19 @@
 		})
 	);
 
+	let hasMousePlayer = $derived(
+		Object.keys(playersContext.players).some((playerKey) => {
+			const player = playersContext.players[Number(playerKey)];
+			return player.active && player.isMouse;
+		})
+	);
+
+	let canContinue = $derived((allActive || hasMousePlayer) && isTimerValid);
+
 	let subtitleMessage = $derived(
-		hasControllers ? "Test your controllers and click continue when you are ready" : "Just click continue when you are ready"
+		hasControllers ? "Test your controllers and click continue when you are ready" :
+		hasMousePlayer ? "Single player ready - click continue when you are ready" :
+		"Or connect controllers to continue"
 	);
 
 	onMount(() => {
@@ -83,6 +92,21 @@
 </div>
 
 <Players pageName="landing" />
+
+{#if !hasControllers && !hasMousePlayer}
+	<div class="add-mouse-player">
+		<button class="add-mouse-btn" onclick={playersContext.toggleMousePlayer}>
+			<span class="add-text">Play with a mouse (single player)</span>
+		</button>
+	</div>
+{:else if hasMousePlayer && !hasControllers}
+	<div class="mouse-player-status">
+		<span class="mouse-status">🖱️ single player active</span>
+		<button class="remove-mouse-btn" onclick={playersContext.toggleMousePlayer}>
+			Remove
+		</button>
+	</div>
+{/if}
 
 <h3 class="subtitle">{subtitleMessage}</h3>
 <div class="timer-settings">

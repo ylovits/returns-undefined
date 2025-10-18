@@ -2,9 +2,10 @@
 	import { goto } from "$app/navigation";
 
 	const handleRestart = () => {
-		// Clear localStorage to reset game state
+		// Clear localStorage to reset game state, scores, and players
 		localStorage.removeItem("score");
 		localStorage.removeItem("gameState");
+		localStorage.removeItem("players");
 
 		// Navigate back to home page and then reload
 		goto("/").then(() => {

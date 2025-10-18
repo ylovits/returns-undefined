@@ -10,7 +10,11 @@
 	import confetti from "canvas-confetti";
 
 	const { players } = getContext<{ players: PlayersState }>("players");
-	const scoresContext = getContext<{ scores: ScoresState }>("scores");
+	const scoresContext = getContext<{
+		scores: ScoresState;
+		displayScores: ScoresState;
+		updateDisplay: () => void;
+	}>("scores");
 	const score = useLocalStorage("score");
 
 	const { getReadyCheckCount, setReadyCheckCount } = getContext<{
@@ -140,10 +144,15 @@
 
 			// Update score (same logic as gamepad players)
 			if (scoresContext.scores) {
-				scoresContext.scores[playerIndex] =
-					answerIndex === data.question.correctAnswerIndex && !players[playerIndex].selected
-						? (scoresContext.scores[playerIndex] || 0) + 1
-						: (scoresContext.scores[playerIndex] || 0);
+				// Don't count tutorial/practice questions (check if we're on /trivia vs /trivia/[question])
+				const isTutorial = !data.questionNumber && data.questionNumber !== 0; // Tutorial has no questionNumber
+				const currentScore = scoresContext.scores[playerIndex] || 0;
+				const isCorrect = answerIndex === data.question.correctAnswerIndex && !players[playerIndex].selected;
+				const newScore = isTutorial ? currentScore : (isCorrect ? currentScore + 1 : currentScore);
+
+
+				scoresContext.scores[playerIndex] = newScore;
+				// Note: Don't save to localStorage immediately to avoid spoiling answers for other players
 			}
 
 			// Mark as selected and update ready count
@@ -154,7 +163,8 @@
 	};
 
 	const updateScore = () => {
-		score.value = scoresContext.scores;
+		// Update display scores and save to localStorage
+		scoresContext.updateDisplay();
 	};
 
 	const handleClick = () => {
@@ -183,7 +193,7 @@
 	});
 </script>
 
-<Score scores={score.value} {players} />
+<Score scores={scoresContext.displayScores} {players} />
 <div class="question">
 	<h1>{@html highlightedQuestionText}</h1>
 

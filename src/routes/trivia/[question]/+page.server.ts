@@ -1,7 +1,8 @@
 import { questions } from "../questions.sever";
 import { error } from "@sveltejs/kit";
+import type { PageServerLoad } from "./$types";
 
-export function load({ params }) {
+export const load: PageServerLoad = ({ params }) => {
 	const questionIndex = Number(params.question);
 	const question = questions[questionIndex];
 	if (!question) error(404);
