@@ -180,6 +180,17 @@
 		}
 	};
 
+	// Log question content when a new question loads
+	$effect(() => {
+		let cleanedText = data.question.text
+			.replace(/<pre class='code'>/g, '')
+			.replace(/<\/pre> returns:$/g, '')
+			.replace(/<\/pre>$/g, '')
+			.trim();
+      const style = 'padding: 1rem; background-color: black; color: white; font-size: 1em;'
+      console.log("%c"+cleanedText+ " returns: ", style, eval(cleanedText));
+	});
+
 	onMount(() => {
 		// Start timer on first question (question 0)
 		if (data.questionNumber === 0 && gameState.timerEnabled && gameState.timeRemaining > 0) {
