@@ -175,7 +175,8 @@
 						}
 					}
 
-					gamepadPlayer.x = landingPage ? xAxisSum * 12 * multiplier : gamepadPlayer.x;
+					// Allow rotation on all pages - temporary while holding stick
+				gamepadPlayer.x = landingPage ? xAxisSum * 12 * multiplier : xAxisSum * 6;
 				}
 			});
 			// score.value = currentScore;
