@@ -127,6 +127,37 @@
 									const isCorrect = gamepadPlayer.currentSelection === props.question.correctAnswerIndex;
 									const newScore = isTutorial ? currentScore : (isCorrect ? currentScore + 1 : currentScore);
 
+									// Add vibration feedback (only in real game, not tutorial)
+									if (!isTutorial && myGamepad.vibrationActuator) {
+										if (!isCorrect) {
+											// Single longer vibration for incorrect answer
+											myGamepad.vibrationActuator.playEffect("dual-rumble", {
+												startDelay: 0,
+												duration: 400,
+												weakMagnitude: 0.1,
+												strongMagnitude: 0.2,
+											});
+										} else {
+											// Two quick vibrations for correct answer
+											myGamepad.vibrationActuator.playEffect("dual-rumble", {
+												startDelay: 0,
+												duration: 100,
+												weakMagnitude: 0.1,
+												strongMagnitude: 0.2,
+											});
+											// Second vibration after a brief pause
+											setTimeout(() => {
+												if (myGamepad.vibrationActuator) {
+													myGamepad.vibrationActuator.playEffect("dual-rumble", {
+														startDelay: 0,
+														duration: 100,
+														weakMagnitude: 0.1,
+														strongMagnitude: 0.2,
+													});
+												}
+											}, 350);
+										}
+									}
 
 									scoresContext.scores[myGamepad.index] = newScore;
 									scoredPlayers.add(myGamepad.index); // Mark this player as scored
