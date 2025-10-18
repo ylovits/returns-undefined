@@ -9,11 +9,16 @@
 	import { processQuestionText } from "$lib/syntax-highlighting";
 	import confetti from "canvas-confetti";
 
-	const { players } = getContext<{ players: PlayersState }>("players");
+	const { players, updatePlayer, resetPlayerAnswers } = getContext<{
+		players: PlayersState;
+		updatePlayer: (playerIndex: number, updates: Partial<any>) => void;
+		resetPlayerAnswers: () => void;
+	}>("players");
 	const scoresContext = getContext<{
 		scores: ScoresState;
 		displayScores: ScoresState;
 		updateDisplay: () => void;
+		updatePlayerScore: (playerIndex: number, newScore: number) => void;
 	}>("scores");
 	const score = useLocalStorage("score");
 
@@ -108,15 +113,9 @@
 		return classes;
 	};
 
-	const resetPlayerAnswers = () => {
-		Object.keys(players).forEach((playerKey) => {
-			players[Number(playerKey)].x = 0;
-			players[Number(playerKey)].y = 0;
-			players[Number(playerKey)].lastMovement = Date.now();
-			players[Number(playerKey)].currentSelection = 0;
-			players[Number(playerKey)].selected = false;
-			setReadyCheckCount(0);
-		});
+	const resetAnswers = () => {
+		resetPlayerAnswers();
+		setReadyCheckCount(0);
 	};
 
 	// Handle mouse click on answer options for mouse players
@@ -129,34 +128,37 @@
 		if (mousePlayer) {
 			const playerIndex = mouseIndex;
 
-			// Update selection and position - move player to selected answer
-			players[playerIndex].currentSelection = answerIndex;
-
 			// Calculate position based on answer index (similar to gamepad movement)
+			let newY = 0;
 			if (answerElements.length > 0) {
 				const answerPositions = answerElements.map((elm) => {
 					return elm.getBoundingClientRect().top - (wrapperElm?.getBoundingClientRect().top || 0);
 				});
 				const multiplier = 1 / 2; // Same multiplier as used in Players.svelte for quiz pages
-				players[playerIndex].y = answerPositions[answerIndex] * multiplier;
-				players[playerIndex].x = 0; // Keep x centered
+				newY = answerPositions[answerIndex] * multiplier;
 			}
+
+			// Update player with new selection and position
+			updatePlayer(playerIndex, {
+				currentSelection: answerIndex,
+				y: newY,
+				x: 0, // Keep x centered
+				selected: true
+			});
 
 			// Update score (same logic as gamepad players)
 			if (scoresContext.scores) {
 				// Don't count tutorial/practice questions (check if we're on /trivia vs /trivia/[question])
 				const isTutorial = !data.questionNumber && data.questionNumber !== 0; // Tutorial has no questionNumber
 				const currentScore = scoresContext.scores[playerIndex] || 0;
-				const isCorrect = answerIndex === data.question.correctAnswerIndex && !players[playerIndex].selected;
+				const isCorrect = answerIndex === data.question.correctAnswerIndex && !mousePlayer.selected;
 				const newScore = isTutorial ? currentScore : (isCorrect ? currentScore + 1 : currentScore);
 
-
-				scoresContext.scores[playerIndex] = newScore;
+				scoresContext.updatePlayerScore(playerIndex, newScore);
 				// Note: Don't save to localStorage immediately to avoid spoiling answers for other players
 			}
 
-			// Mark as selected and update ready count
-			players[playerIndex].selected = true;
+			// Update ready count
 			const currentReady = getReadyCheckCount();
 			setReadyCheckCount(currentReady + 1);
 		}
@@ -169,7 +171,7 @@
 
 	const handleClick = () => {
 		updateScore();
-		resetPlayerAnswers();
+		resetAnswers();
 
 		updateGameState({ questionsAnswered: gameState.questionsAnswered + 1 });
 

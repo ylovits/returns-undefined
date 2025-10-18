@@ -125,8 +125,37 @@ import { page } from "$app/stores";
 		gameStateStorage.value = newState;
 	};
 
+	// Function to update a specific player
+	const updatePlayer = (playerIndex: number, updates: Partial<typeof players[0]>) => {
+		if (players[playerIndex]) {
+			players[playerIndex] = { ...players[playerIndex], ...updates };
+		}
+	};
+
+	// Function to reset all player answers
+	const resetPlayerAnswers = () => {
+		Object.keys(players).forEach((playerKey) => {
+			const playerIndex = Number(playerKey);
+			if (players[playerIndex]) {
+				players[playerIndex] = {
+					...players[playerIndex],
+					x: 0,
+					y: 0,
+					lastMovement: Date.now(),
+					currentSelection: 0,
+					selected: false
+				};
+			}
+		});
+	};
+
 	// svelte-ignore state_referenced_locally
-	setContext("players", { players, toggleMousePlayer });
+	setContext("players", { players, toggleMousePlayer, updatePlayer, resetPlayerAnswers });
+	// Function to update a player's score
+	const updatePlayerScore = (playerIndex: number, newScore: number) => {
+		gameScores[playerIndex] = newScore;
+	};
+
 	// Create reactive scores context - use gameScores for live updates, displayScores for UI
 	let scoresContext = $state({
 		get scores() { return gameScores; },
@@ -134,7 +163,8 @@ import { page } from "$app/stores";
 		updateDisplay: () => {
 			displayScores = { ...gameScores };
 			score.value = { ...gameScores };
-		}
+		},
+		updatePlayerScore
 	});
 
 	// svelte-ignore state_referenced_locally

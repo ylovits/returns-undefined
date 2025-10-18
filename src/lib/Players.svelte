@@ -12,11 +12,16 @@
 	let answerPositions = $state<number[]>([]);
 	let scoredPlayers = $state<Set<number>>(new Set()); // Track which players have been scored this question
 
-	const playersContext = getContext<{ players: PlayersState }>("players");
+	const playersContext = getContext<{
+		players: PlayersState;
+		updatePlayer: (playerIndex: number, updates: Partial<any>) => void;
+		resetPlayerAnswers: () => void;
+	}>("players");
 	const scoresContext = getContext<{
 		scores: ScoresState;
 		displayScores: ScoresState;
 		updateDisplay: () => void;
+		updatePlayerScore: (playerIndex: number, newScore: number) => void;
 	}>("scores");
 	const { setReadyCheckCount, getReadyCheckCount } = getContext<{
 		setReadyCheckCount: (count: number) => void;
@@ -35,8 +40,12 @@
 	});
 
 	onMount(() => {
-		if (!scoresContext.scores) {
-			scoresContext.scores = score.value;
+		if (!scoresContext.scores && score.value) {
+			// Initialize scores from localStorage
+			Object.keys(score.value).forEach(playerKey => {
+				const playerIndex = Number(playerKey);
+				scoresContext.updatePlayerScore(playerIndex, score.value[playerIndex]);
+			});
 		}
 
 		let frame = requestAnimationFrame(function update() {
@@ -73,7 +82,9 @@
 					// For mouse players, position is already handled by click handlers
 					// Just ensure position is maintained when selected
 					if (!landingPage && answerPositions.length > 0 && !player.selected) {
-						player.y = answerPositions[player.currentSelection] * multiplier;
+						playersContext.updatePlayer(playerIndex, {
+							y: answerPositions[player.currentSelection] * multiplier
+						});
 					}
 				} else if (myGamepad) {
 					const gamepadPlayer = contextPlayers[myGamepad.index];
@@ -83,7 +94,9 @@
 					const { pressing, yAxisSum, xAxisSum } = mainControls(myGamepad);
 
 					if (landingPage) {
-						gamepadPlayer.y = gamepadPlayer.selected ? gamepadPlayer.y : yAxisSum * 60;
+						const newY = gamepadPlayer.selected ? gamepadPlayer.y : yAxisSum * 60;
+						playersContext.updatePlayer(myGamepad.index, { y: newY });
+
 						if (pressing) {
 							myGamepad.vibrationActuator.playEffect("trigger-rumble", {
 								startDelay: 0,
@@ -91,8 +104,9 @@
 								weakMagnitude: 1,
 								strongMagnitude: 1,
 							});
-							gamepadPlayer.x += Math.floor(Math.random() * 21 * multiplier) - 11 * multiplier;
-							gamepadPlayer.y += Math.floor(Math.random() * 21 * multiplier) - 10 * multiplier;
+							const newX = gamepadPlayer.x + Math.floor(Math.random() * 21 * multiplier) - 11 * multiplier;
+							const finalY = gamepadPlayer.y + Math.floor(Math.random() * 21 * multiplier) - 10 * multiplier;
+							playersContext.updatePlayer(myGamepad.index, { x: newX, y: finalY });
 						}
 					} else {
 						if (!answerPositions.length && props.answerElements) {
@@ -106,18 +120,25 @@
 
 						if (answerPositions && !gamepadPlayer.selected) {
 							if ((moveDown || moveUp) && timeSinceLastMove > 200) {
-								changeSelection(moveDown ? "down" : "up", gamepadPlayer, answerPositions.length);
-								gamepadPlayer.lastMovement = Date.now();
-								gamepadPlayer.y = answerPositions[gamepadPlayer.currentSelection] * multiplier;
+								const newSelection = changeSelection(moveDown ? "down" : "up", gamepadPlayer, answerPositions.length);
+								playersContext.updatePlayer(myGamepad.index, {
+									lastMovement: Date.now(),
+									currentSelection: newSelection,
+									y: answerPositions[newSelection] * multiplier
+								});
 							} else {
-								gamepadPlayer.y = answerPositions[gamepadPlayer.currentSelection] * multiplier;
+								playersContext.updatePlayer(myGamepad.index, {
+									y: answerPositions[gamepadPlayer.currentSelection] * multiplier
+								});
 							}
 						} else {
-							gamepadPlayer.y = gamepadPlayer.selected ? gamepadPlayer.y : yAxisSum * 60;
+							const newY = gamepadPlayer.selected ? gamepadPlayer.y : yAxisSum * 60;
+							playersContext.updatePlayer(myGamepad.index, { y: newY });
 						}
 
 						if (select && timeSinceLastMove > 200) {
-							gamepadPlayer.lastMovement = Date.now();
+							playersContext.updatePlayer(myGamepad.index, { lastMovement: Date.now() });
+
 							if (!!gamepadPlayer.currentSelection || gamepadPlayer.currentSelection == 0) {
 								// Only update score if not already scored this question (prevent multiple scoring)
 								if (!scoredPlayers.has(myGamepad.index)) {
@@ -159,16 +180,16 @@
 										}
 									}
 
-									scoresContext.scores[myGamepad.index] = newScore;
+									scoresContext.updatePlayerScore(myGamepad.index, newScore);
 									scoredPlayers.add(myGamepad.index); // Mark this player as scored
 									// Note: Don't save to localStorage immediately to avoid spoiling answers for other players
 
 									const liveReadyCount = getReadyCheckCount();
 									setReadyCheckCount(liveReadyCount + 1);
 								}
-								gamepadPlayer.selected = true;
+								playersContext.updatePlayer(myGamepad.index, { selected: true });
 							} else {
-								gamepadPlayer.selected = false;
+								playersContext.updatePlayer(myGamepad.index, { selected: false });
 								const liveReadyCount = getReadyCheckCount();
 								setReadyCheckCount(liveReadyCount - 1);
 							}
@@ -176,7 +197,8 @@
 					}
 
 					// Allow rotation on all pages - temporary while holding stick
-				gamepadPlayer.x = landingPage ? xAxisSum * 12 * multiplier : xAxisSum * 6;
+					const newX = landingPage ? xAxisSum * 12 * multiplier : xAxisSum * 6;
+					playersContext.updatePlayer(myGamepad.index, { x: newX });
 				}
 			});
 			// score.value = currentScore;

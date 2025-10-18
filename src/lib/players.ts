@@ -23,11 +23,14 @@ export const shapeSVGs: { [key: Shapes]: string } = {
 	pentagon: '<polygon points="188.5,53.5 323.5,146.69 273.19,291.31 103.81,291.31 53.5,146.69" />',
 };
 
-export const changeSelection = (direction: "up" | "down", player: Player, answersNo: number) => {
-	if (!player.gamepad) return;
+export const changeSelection = (direction: "up" | "down", player: Player, answersNo: number): number => {
+	if (!player.gamepad) return player.currentSelection;
+
 	if (direction === "up" && player.currentSelection > 0) {
-		player.currentSelection -= 1;
+		return player.currentSelection - 1;
 	} else if (direction === "down" && player.currentSelection < answersNo - 1) {
-		player.currentSelection += 1;
+		return player.currentSelection + 1;
 	}
+
+	return player.currentSelection;
 };

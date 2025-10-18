@@ -78,15 +78,15 @@ export const questions: Question[] = [
 		correctAnswerIndex: 2,
 	},
 	{
-		text: `<pre class='code'>null == undefined</pre> returns:`,
-		options: [`false`, `null`, `true`, `undefined`],
-		correctAnswerIndex: 2,
-	},
-	{
-		text: `<pre class='code'>null instanceof Object</pre> returns:`,
+    text: `<pre class='code'>null instanceof Object</pre> returns:`,
 		options: [`true`, `null`, `false`, `undefined`],
 		correctAnswerIndex: 2,
 	},
+  {
+    text: `<pre class='code'>null == undefined</pre> returns:`,
+    options: [`false`, `null`, `true`, `undefined`],
+    correctAnswerIndex: 2,
+  },
 	{
 		text: `<pre class='code'>"cat" instanceof String</pre> returns:`,
 		options: [`undefined`, `true`, `false`, `null`],
@@ -118,7 +118,7 @@ export const questions: Question[] = [
 		correctAnswerIndex: 1,
 	},
 	{
-		text: `<pre class='code'>3 + +''</pre> returns:`,
+		text: `<pre class='code'>3 + + ""</pre> returns:`,
 		options: [`'3'`, `NaN`, `3`, `0`],
 		correctAnswerIndex: 2,
 	},
