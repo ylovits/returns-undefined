@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { goto } from "$app/navigation";
+	import { base } from "$app/paths";
 
 	const handleRestart = () => {
 		// Clear localStorage to reset game state, scores, and players
@@ -15,7 +16,7 @@
 </script>
 
 <button class="restart-button" on:click={handleRestart} title="Restart Game">
-	<img src="/js.svg" alt="JavaScript Logo - Restart Game" />
+	<img src="{base}/js.svg" alt="JavaScript Logo - Restart Game" />
 </button>
 
 <style lang="less">

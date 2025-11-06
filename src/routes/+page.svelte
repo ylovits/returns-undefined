@@ -1,6 +1,7 @@
 <script lang="ts">
 	import Players from "$lib/Players.svelte";
 	import { goto } from "$app/navigation";
+	import { base } from "$app/paths";
 	import type { PlayersState, GameState } from "$types";
 	import { getContext, onMount } from "svelte";
 	import useLocalStorage from "$lib/storage.svelte";
@@ -112,7 +113,7 @@
 </script>
 
 <div class="title">
-	<img src="./js.svg" alt="JS LOGO" />
+	<img src="{base}/js.svg" alt="JS LOGO" />
 	<h1>Returns Undefined</h1>
 </div>
 
