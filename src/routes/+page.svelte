@@ -4,6 +4,7 @@
 	import type { PlayersState, GameState } from "$types";
 	import { getContext, onMount } from "svelte";
 	import useLocalStorage from "$lib/storage.svelte";
+	import QRCode from "qrcode";
 
 	const playersContext = getContext<{ players: PlayersState; toggleMousePlayer: () => void }>("players");
 	const gameStateContext = getContext<{
@@ -15,6 +16,8 @@
 
 	let timerEnabled = $state(false);
 	let timerMinutes = $state(15);
+	let showQRModal = $state(false);
+	let qrCodeDataUrl = $state("");
 
 	let allActive = $derived(
 		Object.keys(playersContext.players).some((playerKey) => {
@@ -84,6 +87,28 @@
 			console.error("Error in handleStartGame:", error);
 		}
 	};
+
+	const handleShowQR = async () => {
+		try {
+			const url = "https://ylovits.github.io/returns-undefined";
+			const dataUrl = await QRCode.toDataURL(url, {
+				width: 256,
+				margin: 2,
+				color: {
+					dark: '#000000',
+					light: '#FFFFFF'
+				}
+			});
+			qrCodeDataUrl = dataUrl;
+			showQRModal = true;
+		} catch (error) {
+			console.error("Error generating QR code:", error);
+		}
+	};
+
+	const closeQRModal = () => {
+		showQRModal = false;
+	};
 </script>
 
 <div class="title">
@@ -132,4 +157,35 @@
 	{/if}
 </div>
 
+	<button class="qr-btn" onclick={handleShowQR}>⛶</button>
 <button class="nextBtn" disabled={!canContinue} onclick={handleStartGame}>Continue</button>
+
+{#if showQRModal}
+	<div
+		class="qr-modal-overlay"
+		role="button"
+		tabindex="0"
+		aria-label="Close QR modal"
+		onclick={closeQRModal}
+		onkeydown={(e) => { if (e.key === 'Enter' || e.key === ' ') closeQRModal(); }}
+	>
+		<div
+			class="qr-modal"
+			role="dialog"
+			aria-modal="true"
+		>
+			<button
+				class="qr-close"
+				onclick={closeQRModal}
+				onkeydown={(e) => { if (e.key === 'Escape') closeQRModal(); }}
+			>×</button>
+			<h2>Scan to Play</h2>
+			<div class="qr-code">
+				{#if qrCodeDataUrl}
+					<img src={qrCodeDataUrl} alt="QR Code for Returns Undefined game" />
+				{/if}
+			</div>
+			<p class="qr-url">https://ylovits.github.io/returns-undefined</p>
+		</div>
+	</div>
+{/if}
