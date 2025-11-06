@@ -191,7 +191,14 @@
 			.replace(/<\/pre>$/g, '')
 			.trim();
       const style = 'padding: 1rem; background-color: black; color: white; font-size: 1em;'
-      console.log("%c"+cleanedText+ " returns: ", style, eval(cleanedText));
+
+      try {
+        const func = new Function(`return ${cleanedText}`);
+        const result = func();
+        console.log("%c"+cleanedText+ " returns: ", style, result);
+      } catch (error) {
+        console.log("%c"+cleanedText+ " returns: ", style, `Error: ${error}`);
+      }
 	});
 
 	onMount(() => {
