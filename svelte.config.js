@@ -15,6 +15,10 @@ const config = {
 			$routes: "./src/routes/*",
 			$lib: "./src/lib/*",
 		},
+		// Configure paths for GitHub Pages subdirectory
+		paths: {
+			base: process.env.NODE_ENV === 'production' ? '/returns-undefined' : '',
+		},
 		// Configure adapter-static for GitHub Pages SPA mode
 		adapter: adapter({
 			pages: 'build',
