@@ -83,7 +83,7 @@
 				gameStateStorage.value = newState;
 			}
 
-			goto("/trivia");
+			goto(`${base}/trivia`);
 		} catch (error) {
 			console.error("Error in handleStartGame:", error);
 		}

@@ -3,6 +3,7 @@
 	import type { PlayersState, ScoresState } from "$types";
 	import { getContext } from "svelte";
 	import { goto } from "$app/navigation";
+	import { base } from "$app/paths";
 	import useLocalStorage from "$lib/storage.svelte";
 	import { processQuestionText } from "$lib/syntax-highlighting";
 
@@ -96,7 +97,7 @@
 	const handleClick = () => {
 		if (allAnswered && allCorrect) {
 			resetStage();
-			goto("/trivia/0");
+			goto(`${base}/trivia/0`);
 		} else {
 			resetStage();
 		}

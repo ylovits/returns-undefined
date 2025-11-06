@@ -9,7 +9,7 @@
 		localStorage.removeItem("players");
 
 		// Navigate back to home page and then reload
-		goto("/").then(() => {
+		goto(`${base}/`).then(() => {
 			window.location.reload();
 		});
 	};

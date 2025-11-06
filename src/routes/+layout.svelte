@@ -9,6 +9,7 @@
 	import { setContext } from "svelte";
 	import useLocalStorage from "$lib/storage.svelte";
 	import { goto } from "$app/navigation";
+	import { base } from "$app/paths";
 import { page } from "$app/stores";
 
 	let props = $props();
@@ -116,7 +117,7 @@ import { page } from "$app/stores";
 		}
 		stopTimer();
 		gameStateStorage.value = { ...gameState };
-		goto("/trivia/results");
+		goto(`${base}/trivia/results`);
 	};
 
 	const updateGameState = (updates: Partial<GameState>) => {

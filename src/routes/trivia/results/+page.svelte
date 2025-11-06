@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { getContext, onMount } from "svelte";
 	import { goto } from "$app/navigation";
+	import { base } from "$app/paths";
 	import Player from "$lib/Player.svelte";
 	import type { PlayersState, ScoresState, GameState } from "$types";
 	import useLocalStorage from "$lib/storage.svelte";
@@ -124,7 +125,7 @@
 		});
 
 		// Go back to landing page and reload
-		goto("/").then(() => {
+		goto(`${base}/`).then(() => {
 			window.location.reload();
 		});
 	};

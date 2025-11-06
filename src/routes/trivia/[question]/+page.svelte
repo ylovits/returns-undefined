@@ -2,6 +2,7 @@
 	import Players from "$lib/Players.svelte";
 	import Score from "$lib/Score.svelte";
 	import { goto } from "$app/navigation";
+	import { base } from "$app/paths";
 	import { getContext, onMount } from "svelte";
 	import "../trivia.less";
 	import type { PlayersState, ScoresState, GameState } from "$types";
@@ -176,9 +177,9 @@
 		updateGameState({ questionsAnswered: gameState.questionsAnswered + 1 });
 
 		if (data.isLastQuestion || gameState.gameEnded) {
-			goto("/trivia/results");
+			goto(`${base}/trivia/results`);
 		} else {
-			goto("/trivia/" + data.nextPage);
+			goto(`${base}/trivia/${data.nextPage}`);
 		}
 	};
 
@@ -201,7 +202,7 @@
 
 		// Redirect to results if game has already ended
 		if (gameState.gameEnded) {
-			goto("/trivia/results");
+			goto(`${base}/trivia/results`);
 		}
 	});
 </script>
