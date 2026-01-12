@@ -42,7 +42,7 @@
 	onMount(() => {
 		if (!scoresContext.scores && score.value) {
 			// Initialize scores from localStorage
-			Object.keys(score.value).forEach(playerKey => {
+			Object.keys(score.value).forEach((playerKey) => {
 				const playerIndex = Number(playerKey);
 				scoresContext.updatePlayerScore(playerIndex, score.value[playerIndex]);
 			});
@@ -83,7 +83,7 @@
 					// Just ensure position is maintained when selected
 					if (!landingPage && answerPositions.length > 0 && !player.selected) {
 						playersContext.updatePlayer(playerIndex, {
-							y: answerPositions[player.currentSelection] * multiplier
+							y: answerPositions[player.currentSelection] * multiplier,
 						});
 					}
 				} else if (myGamepad) {
@@ -124,11 +124,11 @@
 								playersContext.updatePlayer(myGamepad.index, {
 									lastMovement: Date.now(),
 									currentSelection: newSelection,
-									y: answerPositions[newSelection] * multiplier
+									y: answerPositions[newSelection] * multiplier,
 								});
 							} else {
 								playersContext.updatePlayer(myGamepad.index, {
-									y: answerPositions[gamepadPlayer.currentSelection] * multiplier
+									y: answerPositions[gamepadPlayer.currentSelection] * multiplier,
 								});
 							}
 						} else {
@@ -146,7 +146,7 @@
 									const isTutorial = props.pageName === "trivia" && !window.location.pathname.match(/\/trivia\/\d+/);
 									const currentScore = scoresContext.scores[myGamepad.index] || 0;
 									const isCorrect = gamepadPlayer.currentSelection === props.question.correctAnswerIndex;
-									const newScore = isTutorial ? currentScore : (isCorrect ? currentScore + 1 : currentScore);
+									const newScore = isTutorial ? currentScore : isCorrect ? currentScore + 1 : currentScore;
 
 									// Add vibration feedback (only in real game, not tutorial)
 									if (!isTutorial && myGamepad.vibrationActuator) {
@@ -216,7 +216,9 @@
 	{#key playersContext.players}
 		{#each shapes as shape, i}
 			{@const { active, pressing, selected, x, y } =
-				playersContext.players && playersContext.players[i] && playersContext.players[i].active ? playersContext.players[i] : initialPlayerObject}
+				playersContext.players && playersContext.players[i] && playersContext.players[i].active
+					? playersContext.players[i]
+					: initialPlayerObject}
 			{#if active}
 				<Player {active} {pressing} {selected} {x} {y} {shape} {multiplier} />
 			{/if}

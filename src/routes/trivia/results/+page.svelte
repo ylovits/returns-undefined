@@ -40,9 +40,12 @@
 		const storageState = gameStateStorage.value;
 		const questionsFromStorage = storageState?.questionsAnswered || 0;
 		const questionsFromContext = gameState.questionsAnswered || 0;
-		const questionsPlayersSaw = questionsFromStorage > 0 ? questionsFromStorage :
-									questionsFromContext > 0 ? questionsFromContext :
-									data.totalQuestions;
+		const questionsPlayersSaw =
+			questionsFromStorage > 0
+				? questionsFromStorage
+				: questionsFromContext > 0
+					? questionsFromContext
+					: data.totalQuestions;
 
 		const playerResults = Object.keys(players)
 			.filter((playerKey) => players[Number(playerKey)].active)
@@ -121,7 +124,7 @@
 			timerMinutes: 15,
 			timeRemaining: 0,
 			questionsAnswered: 0,
-			gameEnded: false
+			gameEnded: false,
 		});
 
 		// Go back to landing page and reload
@@ -162,10 +165,10 @@
 						<span class="correct">✅ {result.correctAnswers}</span>
 						<span class="incorrect">❌ {result.incorrectAnswers}</span>
 					</div>
-                    <div class="detailed-score">
-                        <div class="score-points">{result.correctAnswers} correct</div>
-                        <div class="total">out of {result.totalQuestions} questions answered</div>
-                    </div>
+					<div class="detailed-score">
+						<div class="score-points">{result.correctAnswers} correct</div>
+						<div class="total">out of {result.totalQuestions} questions answered</div>
+					</div>
 					{#if result.totalQuestions < data.totalQuestions}
 						<div class="total-available">({data.totalQuestions} total questions available)</div>
 					{/if}
@@ -175,8 +178,8 @@
 	</div>
 
 	<div class="actions">
-        <button class="restartBtn" onclick={() => restartGame()}>
-            <div class="background"></div>
+		<button class="restartBtn" onclick={() => restartGame()}>
+			<div class="background"></div>
 			<span>Play Again</span>
 		</button>
 	</div>

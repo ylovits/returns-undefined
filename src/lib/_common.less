@@ -55,7 +55,7 @@
 			background: darken(@primary-xd, 15%);
 			color: @primary-m;
 			z-index: 2;
-			font-family: "Vaticanus", monospace;
+			font-family: "Pixelon", monospace;
 
 			&:hover {
 				background: darken(@primary-xd, 18%);
@@ -71,4 +71,40 @@
 
 .balanceOutFilter() {
 	transform: translate(0, -0.5rem);
+}
+
+// Mobile responsive styles for common elements
+@media (max-width: 768px), (max-height: 1024px) and (orientation: portrait) {
+	#app {
+		main {
+			.nextBtn {
+				bottom: 1rem;
+				right: 1rem;
+				left: auto; // Remove left positioning
+				padding: 0.75rem 1.5rem;
+				font-size: 1.8rem;
+				border-radius: 0.5rem;
+				min-height: 44px;
+				width: auto; // Let it size to content
+				position: fixed;
+				z-index: 10; // Ensure it's above other elements
+			}
+		}
+	}
+}
+
+@media (max-width: 480px) {
+	#app {
+		main {
+			.nextBtn {
+				bottom: 1rem;
+				right: 1rem;
+				left: auto; // Remove left positioning for small screens too
+				padding: 0.75rem 1.25rem;
+				font-size: 1.6rem;
+				text-align: center;
+				width: auto; // Let it size to content
+			}
+		}
+	}
 }

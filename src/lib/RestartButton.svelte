@@ -36,8 +36,8 @@
 			display: block;
 		}
 
-        &:hover {
-            filter: opacity(1);
-        }
+		&:hover {
+			filter: opacity(1);
+		}
 	}
 </style>

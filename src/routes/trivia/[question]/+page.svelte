@@ -144,7 +144,7 @@
 				currentSelection: answerIndex,
 				y: newY,
 				x: 0, // Keep x centered
-				selected: true
+				selected: true,
 			});
 
 			// Update score (same logic as gamepad players)
@@ -153,7 +153,7 @@
 				const isTutorial = !data.questionNumber && data.questionNumber !== 0; // Tutorial has no questionNumber
 				const currentScore = scoresContext.scores[playerIndex] || 0;
 				const isCorrect = answerIndex === data.question.correctAnswerIndex && !mousePlayer.selected;
-				const newScore = isTutorial ? currentScore : (isCorrect ? currentScore + 1 : currentScore);
+				const newScore = isTutorial ? currentScore : isCorrect ? currentScore + 1 : currentScore;
 
 				scoresContext.updatePlayerScore(playerIndex, newScore);
 				// Note: Don't save to localStorage immediately to avoid spoiling answers for other players
@@ -186,19 +186,36 @@
 	// Log question content when a new question loads
 	$effect(() => {
 		let cleanedText = data.question.text
-			.replace(/<pre class='code'>/g, '')
-			.replace(/<\/pre> returns:$/g, '')
-			.replace(/<\/pre>$/g, '')
+			.replace(/<pre class='code'>/g, "")
+			.replace(/<\/pre> returns:$/g, "")
+			.replace(/<\/pre>$/g, "")
 			.trim();
-      const style = 'padding: 1rem; background-color: black; color: white; font-size: 1em;'
+		const style = "padding: 1rem; background-color: black; color: white; font-size: 1em;";
 
-      try {
-        const func = new Function(`return ${cleanedText}`);
-        const result = func();
-        console.log("%c"+cleanedText+ " returns: ", style, result);
-      } catch (error) {
-        console.log("%c"+cleanedText+ " returns: ", style, `Error: ${error}`);
-      }
+		try {
+			let func;
+			// Check if code has multiple statements (separated by semicolons)
+			if (cleanedText.includes(';')) {
+				// Split by semicolon and handle multi-statement code
+				const statements = cleanedText.split(';').map(s => s.trim()).filter(s => s);
+				if (statements.length > 1) {
+					// Take the last statement/expression as the return value
+					const lastStatement = statements.pop();
+					const otherStatements = statements.join(';');
+					func = new Function(`${otherStatements}; return (${lastStatement});`);
+				} else {
+					// Single statement ending with semicolon
+					func = new Function(`return (${statements[0]})`);
+				}
+			} else {
+				// Single expression without semicolon
+				func = new Function(`return ${cleanedText}`);
+			}
+			const result = func();
+			console.log("%c" + cleanedText + " returns: ", style, result);
+		} catch (error) {
+			console.log("%c" + cleanedText + " returns: ", style, `Error: ${error}`);
+		}
 	});
 
 	onMount(() => {
@@ -222,16 +239,8 @@
 		<Players pageName="trivia" {answerElements} {wrapperElm} question={data.question} />
 		<ul class="answers" bind:this={wrapperElm}>
 			{#each data.question.options as option, i}
-				<li
-					id={`answer-${i + 1}`}
-					bind:this={answerElements[i]}
-					class="answer-option"
-				>
-					<button
-						class="answer-button"
-						onclick={() => handleAnswerClick(i)}
-						type="button"
-					>
+				<li id={`answer-${i + 1}`} bind:this={answerElements[i]} class="answer-option">
+					<button class="answer-button" onclick={() => handleAnswerClick(i)} type="button">
 						<span class={`back ${getClasses(i)}`}></span>
 						<p class="text">{option}</p>
 					</button>

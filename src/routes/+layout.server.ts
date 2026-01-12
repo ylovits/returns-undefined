@@ -1,4 +1,4 @@
-import { base } from '$app/paths';
+import { base } from "$app/paths";
 
 export const load = ({ url, params }) => {
 	let pageName = "landing";

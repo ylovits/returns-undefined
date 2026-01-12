@@ -2,407 +2,569 @@
 @import url("$lib/_vars.less");
 
 #app {
-    overflow: hidden;
+	overflow: hidden;
 
-    main {
-        .title {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-direction: column;
-            padding: 1rem 0 3rem 0;
-            position: relative;
+	main {
+		.title {
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			flex-direction: column;
+			padding: 1rem 0 3rem 0;
+			position: relative;
 
-            img {
-                width: 8rem;
-                height: auto;
-                filter: url(#svgGlow);
-            }
+			img {
+				width: 8rem;
+				height: auto;
+				filter: url(#svgGlow);
+			}
 
-            h1 {
-                font-size: 3rem;
-                margin-left: 1rem;
-                z-index: 4;
-                filter: url(#softGlow);
-            }
+			h1 {
+				font-size: 3rem;
+				margin-left: 1rem;
+				z-index: 4;
+				filter: url(#softGlow);
+			}
+		}
 
-        }
+		.subtitle {
+			font-size: 2.2rem;
+			color: @primary-l;
+			margin-top: 0.5rem;
+			text-align: center;
+			font-weight: 300;
+			z-index: 4;
+			position: relative;
+		}
 
-        .subtitle {
-            font-size: 2.2rem;
-            color: @primary-l;
-            margin-top: 0.5rem;
-            text-align: center;
-            font-weight: 300;
-            z-index: 4;
-            position: relative;
-        }
+		.add-mouse-player {
+			display: flex;
+			justify-content: center;
+			margin: 2rem 0;
+			z-index: 3;
+			position: relative;
 
-        .add-mouse-player {
-            display: flex;
-            justify-content: center;
-            margin: 2rem 0;
-            z-index: 3;
-            position: relative;
+			.add-mouse-btn {
+				display: flex;
+				align-items: center;
+				gap: 0.5rem;
+				padding: 1rem 2rem;
+				border: 3px solid #4a90e2;
+				background: rgba(74, 144, 226, 0.1);
+				color: white;
+				border-radius: 2rem;
+				font-family: "Pixelon", monospace;
+				font-size: 1.5rem;
+				cursor: pointer;
+				transition: all 0.3s ease;
 
-            .add-mouse-btn {
-                display: flex;
-                align-items: center;
-                gap: 0.5rem;
-                padding: 1rem 2rem;
-                border: 3px solid #4a90e2;
-                background: rgba(74, 144, 226, 0.1);
-                color: white;
-                border-radius: 2rem;
-                font-family: 'Pixelon', monospace;
-                font-size: 1.5rem;
-                cursor: pointer;
-                transition: all 0.3s ease;
+				.plus-icon {
+					font-size: 2rem;
+					font-weight: bold;
+				}
 
-                .plus-icon {
-                    font-size: 2rem;
-                    font-weight: bold;
-                }
+				&:hover {
+					background: rgba(74, 144, 226, 0.3);
+					transform: scale(1.05);
+				}
 
-                &:hover {
-                    background: rgba(74, 144, 226, 0.3);
-                    transform: scale(1.05);
-                }
+				&:active {
+					transform: scale(0.95);
+				}
+			}
+		}
 
-                &:active {
-                    transform: scale(0.95);
-                }
-            }
-        }
+		.mouse-player-status {
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			gap: 1rem;
+			margin: 2rem 0;
+			z-index: 3;
+			position: relative;
 
-        .mouse-player-status {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 1rem;
-            margin: 2rem 0;
-            z-index: 3;
-            position: relative;
+			.mouse-status {
+				font-family: "Pixelon", monospace;
+				font-size: 1.5rem;
+				color: #4ade80;
+			}
 
-            .mouse-status {
-                font-family: 'Pixelon', monospace;
-                font-size: 1.5rem;
-                color: #4ade80;
-            }
+			.remove-mouse-btn {
+				padding: 0.5rem 1rem;
+				border: 2px solid #ef4444;
+				background: rgba(239, 68, 68, 0.1);
+				color: #ef4444;
+				border-radius: 1rem;
+				font-family: "Pixelon", monospace;
+				font-size: 1rem;
+				cursor: pointer;
+				transition: all 0.3s ease;
 
-            .remove-mouse-btn {
-                padding: 0.5rem 1rem;
-                border: 2px solid #ef4444;
-                background: rgba(239, 68, 68, 0.1);
-                color: #ef4444;
-                border-radius: 1rem;
-                font-family: 'Pixelon', monospace;
-                font-size: 1rem;
-                cursor: pointer;
-                transition: all 0.3s ease;
+				&:hover {
+					background: rgba(239, 68, 68, 0.3);
+					transform: scale(1.05);
+				}
+			}
+		}
 
-                &:hover {
-                    background: rgba(239, 68, 68, 0.3);
-                    transform: scale(1.05);
-                }
-            }
-        }
+		.players {
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			position: relative;
+			z-index: 1;
+			min-height: 11rem;
 
-        .players {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            position: relative;
-            z-index: 1;
-            min-height: 11rem;
+			.player {
+				width: 7rem;
+				height: 7rem;
+				padding: 1rem;
+				margin: 1rem;
+				filter: grayscale(1);
+				pointer-events: none;
+				transition: all 0.05s ease-in;
 
-            .player {
-                width: 7rem;
-                height: 7rem;
-                padding: 1rem;
-                margin: 1rem;
-                filter: grayscale(1);
-                pointer-events: none;
-                transition: all 0.05s ease-in;
+				g {
+					transition: all 0.08s ease-in;
+				}
 
-                g {
-                    transition: all 0.08s ease-in;
-                }
+				&.active {
+					filter: url(#softGlow);
+					animation: none;
+				}
 
-                &.active {
-                    filter: url(#softGlow);
-                    animation: none;
-                }
+				&.triangle {
+					fill: @triangle;
+				}
 
-                &.triangle {
-                    fill: @triangle;
-                }
+				&.circle {
+					fill: @circle;
+				}
 
-                &.circle {
-                    fill: @circle;
-                }
+				&.hexagon {
+					fill: @hexagon;
+				}
 
-                &.hexagon {
-                    fill: @hexagon;
-                }
+				&.square {
+					fill: @square;
+				}
 
-                &.square {
-                    fill: @square;
-                }
+				&.pentagon {
+					fill: @pentagon;
+				}
 
-                &.pentagon {
-                    fill: @pentagon;
-                }
+				&.selected {
+					g {
+						position: relative;
+						animation: waiting 1s infinite;
+					}
+				}
 
-                &.selected {
-                    g {
-                        position: relative;
-                        animation: waiting 1s infinite;
-                    }
-                }
+				&.failed {
+					filter: url(#dead);
+				}
+			}
+		}
 
-                &.failed {
-                    filter: url(#dead);
-                }
-            }
-        }
+		.timer-settings {
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			gap: 1rem;
+			margin: 5rem auto;
+			padding: 1.5rem;
+			position: relative;
+			width: 20rem;
+			z-index: 3;
 
-        .timer-settings {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 1rem;
-            margin: 5rem auto;
-            padding: 1.5rem;
-            position: relative;
-            width: 20rem;
-            z-index: 3;
+			&-background {
+				background: rgba(0, 0, 0, 0.1);
+				border: 4px solid rgba(255, 255, 255, 0.1);
+				filter: url(#pixelate-sm);
+				padding: 0.1rem;
+				position: absolute;
+				top: 0;
+				left: 0;
+				right: 0;
+				bottom: 0;
+				z-index: -1;
+				border-radius: 1rem;
+				pointer-events: none;
+			}
 
-            &-background {
-                background: rgba(0, 0, 0, 0.1);
-                border: 4px solid rgba(255, 255, 255, 0.1);
-                filter: url(#pixelate-sm);
-                padding: 0.1rem;
-                position: absolute;
-                top: 0;
-                left: 0;
-                right: 0;
-                bottom: 0;
-                z-index: -1;
-                border-radius: 1rem;
-                pointer-events: none;
+			.timer-checkbox {
+				display: flex;
+				align-items: center;
+				gap: 0.5rem;
+				cursor: pointer;
+				font-size: 2rem;
+				color: white;
+				user-select: none;
 
-            }
+				input[type="checkbox"] {
+					filter: url(#pixelate-xs);
 
-            .timer-checkbox {
-                display: flex;
-                align-items: center;
-                gap: 0.5rem;
-                cursor: pointer;
-                font-size: 2rem;
-                color: white;
-                user-select: none;
+					appearance: none;
+					width: 20px;
+					height: 20px;
+					border: 2px solid #4a90e2;
+					border-radius: 4px;
+					background: transparent;
+					cursor: pointer;
+					position: relative;
 
-                input[type="checkbox"] {
-                    filter: url(#pixelate-xs);
+					&:checked {
+						background: #4a90e2;
 
-                    appearance: none;
-                    width: 20px;
-                    height: 20px;
-                    border: 2px solid #4a90e2;
-                    border-radius: 4px;
-                    background: transparent;
-                    cursor: pointer;
-                    position: relative;
+						&::after {
+							content: "✓";
+							position: absolute;
+							top: -2px;
+							left: 2px;
+							color: white;
+							font-size: 14px;
+							font-weight: bold;
+						}
+					}
+				}
+			}
 
-                    &:checked {
-                        background: #4a90e2;
+			.timer-input-group {
+				display: flex;
+				align-items: center;
+				gap: 0.5rem;
+				color: white;
 
-                        &::after {
-                            content: '✓';
-                            position: absolute;
-                            top: -2px;
-                            left: 2px;
-                            color: white;
-                            font-size: 14px;
-                            font-weight: bold;
-                        }
-                    }
-                }
-            }
+				label {
+					font-size: 2rem;
+				}
 
-            .timer-input-group {
-                display: flex;
-                align-items: center;
-                gap: 0.5rem;
-                color: white;
+				.timer-input {
+					font-family: "Pixelon", monospace;
 
-                label {
-                    font-size: 2rem;
-                }
+					padding: 0.5rem;
+					border: 4px solid #4a90e2;
+					background: rgba(0, 0, 0, 0.3);
+					color: white;
+					font-size: 2rem;
+					width: 80px;
+					text-align: center;
+					padding-right: 0rem;
 
-                .timer-input {
-                    font-family: 'Pixelon', monospace;
-
-                    padding: 0.5rem;
-                    border: 4px solid #4a90e2;
-                    background: rgba(0, 0, 0, 0.3);
-                    color: white;
-                    font-size: 2rem;
-                    width: 80px;
-                    text-align: center;
-                    padding-right: 0rem;
-
-                    &:focus {
-                        outline: none;
-                        border-color: #61c3ff;
-                        box-shadow: 0 0 10px rgba(97, 195, 255, 0.3);
-                    }
-                }
-            }
-        }
-    }
+					&:focus {
+						outline: none;
+						border-color: #61c3ff;
+						box-shadow: 0 0 10px rgba(97, 195, 255, 0.3);
+					}
+				}
+			}
+		}
+	}
 }
 
 .filter {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    user-select: none !important;
-    pointer-events: none;
-    z-index: 2;
-    backdrop-filter: url(#pixelate-mosaic);
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	user-select: none !important;
+	pointer-events: none;
+	z-index: 2;
+	backdrop-filter: url(#pixelate-mosaic);
 }
 
 .filter-rg {
-    z-index: 1;
-    filter: url(#pixelate);
+	z-index: 1;
+	filter: url(#pixelate);
 }
 
 .filter-md {
-    z-index: 1;
-    filter: url(#pixelate-md);
+	z-index: 1;
+	filter: url(#pixelate-md);
 }
 
 .filter-sm {
-    z-index: 1;
-    filter: url(#pixelate-sm);
+	z-index: 1;
+	filter: url(#pixelate-sm);
 }
 
 .filter-xs {
-    z-index: 1;
-    filter: url(#pixelate-xs);
+	z-index: 1;
+	filter: url(#pixelate-xs);
 }
 
 @keyframes waiting {
+	from,
+	to {
+		transform: translate(3rem, 3rem) scale(0.7);
+	}
 
-    from,
-    to {
-        transform: translate(3rem, 3rem) scale(0.7);
-    }
+	50% {
+		transform: translate(1.7rem, 1.7rem) scale(0.85, 0.8);
+	}
 
-    50% {
-        transform: translate(1.7rem, 1.7rem) scale(0.85, 0.8);
-    }
+	60% {
+		transform: translate(1.4rem, 1.2rem) scale(0.9, 0.85);
+	}
 
-    60% {
-        transform: translate(1.4rem, 1.2rem) scale(0.9, 0.85);
-    }
-
-    70% {
-        transform: translate(1.7rem, 1.7rem) scale(0.85, 0.8);
-    }
+	70% {
+		transform: translate(1.7rem, 1.7rem) scale(0.85, 0.8);
+	}
 }
 
 .qr-btn {
-    position: absolute;
-    z-index: 4;
-    top: 1rem;
-    right: 1rem;
-    padding: 0.5rem 1rem;
-    background: rgba(74, 144, 226, 0.1);
-    border: 2px solid #4a90e2;
-    color: white;
-    border-radius: 0.5rem;
-    font-family: 'Pixelon', monospace;
-    font-size: 1rem;
-    cursor: pointer;
-    transition: all 0.3s ease;
+	position: absolute;
+	z-index: 4;
+	top: 1rem;
+	right: 1rem;
+	padding: 0.5rem 1rem;
+	background: rgba(74, 144, 226, 0.1);
+	border: 2px solid #4a90e2;
+	color: white;
+	border-radius: 0.5rem;
+	font-family: "Pixelon", monospace;
+	font-size: 1rem;
+	cursor: pointer;
+	transition: all 0.3s ease;
 
-    &:hover {
-        background: rgba(74, 144, 226, 0.3);
-        transform: scale(1.05);
-    }
+	&:hover {
+		background: rgba(74, 144, 226, 0.3);
+		transform: scale(1.05);
+	}
 }
 
 .qr-modal-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: rgba(0, 0, 0, 0.8);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 1000;
+	position: fixed;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	background: rgba(0, 0, 0, 0.8);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	z-index: 1000;
 
-    .qr-modal {
-        background: rgba(20, 20, 20, 0.95);
-        border: 3px solid #4a90e2;
-        border-radius: 1rem;
-        padding: 2rem;
-        max-width: 400px;
-        text-align: center;
-        position: relative;
-        filter: url(#softGlow);
+	.qr-modal {
+		background: rgba(20, 20, 20, 0.95);
+		border: 3px solid #4a90e2;
+		border-radius: 1rem;
+		padding: 2rem;
+		max-width: 400px;
+		text-align: center;
+		position: relative;
+		filter: url(#softGlow);
 
-        .qr-close {
-            position: absolute;
-            top: 0.5rem;
-            right: 0.5rem;
-            background: none;
-            border: none;
-            color: white;
-            font-size: 2rem;
-            cursor: pointer;
-            width: 2rem;
-            height: 2rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+		.qr-close {
+			position: absolute;
+			top: 0.5rem;
+			right: 0.5rem;
+			background: none;
+			border: none;
+			color: white;
+			font-size: 2rem;
+			cursor: pointer;
+			width: 2rem;
+			height: 2rem;
+			display: flex;
+			align-items: center;
+			justify-content: center;
 
-            &:hover {
-                color: #ef4444;
-            }
-        }
+			&:hover {
+				color: #ef4444;
+			}
+		}
 
-        h2 {
-            color: white;
-            font-family: 'Pixelon', monospace;
-            font-size: 2rem;
-            margin-bottom: 1rem;
-        }
+		h2 {
+			color: white;
+			font-family: "Pixelon", monospace;
+			font-size: 2rem;
+			margin-bottom: 1rem;
+		}
 
-        .qr-code {
-            margin: 1rem 0;
-            display: flex;
-            justify-content: center;
+		.qr-code {
+			margin: 1rem 0;
+			display: flex;
+			justify-content: center;
 
-            img {
-                border-radius: 0.5rem;
-                border: 2px solid #4a90e2;
-            }
-        }
+			img {
+				border-radius: 0.5rem;
+				border: 2px solid #4a90e2;
+			}
+		}
 
-        .qr-url {
-            color: #9ca3af;
-            font-family: 'Pixelon', monospace;
-            font-size: 0.9rem;
-            margin-top: 1rem;
-            word-break: break-all;
-        }
-    }
+		.qr-url {
+			color: #9ca3af;
+			font-family: "Pixelon", monospace;
+			font-size: 0.9rem;
+			margin-top: 1rem;
+			word-break: break-all;
+		}
+	}
+}
+
+// Mobile responsive styles
+@media (max-width: 768px), (max-height: 1024px) and (orientation: portrait) {
+	#app {
+		padding: 0 1rem;
+		overflow-y: auto; // Allow scrolling on mobile
+
+		main {
+			.title {
+				padding: 0.5rem 0 1.5rem 0; // Better padding
+
+				img {
+					width: 6rem; // Better logo size
+				}
+
+				h1 {
+					font-size: 2.25rem; // Better title size
+					margin-left: 0.5rem;
+				}
+			}
+
+			.subtitle {
+				font-size: 1.6rem;
+				margin-top: 0.25rem;
+				padding: 0 1rem;
+				text-align: center;
+				min-height: 1.6rem; // Prevent layout shift when hidden
+			}
+
+			.add-mouse-player {
+				margin: 1rem 0; // Reduce margin
+
+				.add-mouse-btn {
+					padding: 1.25rem 1.5rem; // Smaller padding
+					font-size: 1.6rem;
+					min-height: 44px;
+					border-radius: 2rem;
+
+					&:hover {
+						transform: none;
+					}
+
+					&:active {
+						transform: scale(0.98);
+					}
+				}
+			}
+
+			.mouse-player-status {
+				margin: 1rem 0; // Reduce margin
+
+				.mouse-status {
+					font-size: 1.6rem;
+				}
+
+				.remove-mouse-btn {
+					padding: 0.5rem 1rem;
+					font-size: 1rem;
+					min-height: 44px;
+					border-radius: 1rem;
+				}
+			}
+
+			.players {
+				min-height: 4rem; // Much smaller players area
+				margin: 0.5rem 0; // Reduce margin
+
+				.player {
+					width: 3rem; // Smaller players
+					height: 3rem;
+					margin: 0.25rem;
+					padding: 0.5rem;
+				}
+			}
+
+			.timer-settings {
+				margin: 1.5rem auto; // Much smaller margin
+				padding: 1rem;
+				width: 90%;
+				max-width: 25rem;
+
+				.timer-checkbox {
+					font-size: 1.6rem;
+
+					input[type="checkbox"] {
+						width: 20px;
+						height: 20px;
+					}
+				}
+
+				.timer-input-group {
+					label {
+						font-size: 1.6rem;
+					}
+
+					.timer-input {
+						font-size: 1.6rem;
+						width: 80px;
+						padding: 0.5rem;
+					}
+				}
+			}
+		}
+	}
+}
+
+// Extra small mobile devices
+@media (max-width: 480px) {
+	#app {
+		main {
+			.title {
+				img {
+					width: 4.5rem; // Better size for small screens
+				}
+
+				h1 {
+					font-size: 1.9rem; // Better title size
+				}
+			}
+
+			.subtitle {
+				font-size: 1.4rem;
+			}
+
+			.add-mouse-player {
+				.add-mouse-btn {
+					font-size: 1.4rem;
+					padding: 1rem 1.25rem; // Even smaller padding
+				}
+			}
+
+			.mouse-player-status {
+				.mouse-status {
+					font-size: 1.4rem;
+				}
+			}
+
+			.players {
+				min-height: 3rem; // Even smaller players area
+
+				.player {
+					width: 2.5rem; // Even smaller players
+					height: 2.5rem;
+					margin: 0.125rem;
+					padding: 0.25rem;
+				}
+			}
+
+			.timer-settings {
+				margin: 1rem auto; // Even smaller margin
+
+				.timer-checkbox,
+				.timer-input-group label {
+					font-size: 1.4rem;
+				}
+
+				.timer-input-group .timer-input {
+					font-size: 1.4rem;
+					width: 70px;
+					padding: 0.4rem;
+				}
+			}
+		}
+	}
 }

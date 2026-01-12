@@ -10,7 +10,7 @@
 	import useLocalStorage from "$lib/storage.svelte";
 	import { goto } from "$app/navigation";
 	import { base } from "$app/paths";
-import { page } from "$app/stores";
+	import { page } from "$app/stores";
 
 	let props = $props();
 
@@ -28,7 +28,7 @@ import { page } from "$app/stores";
 		timerMinutes: 15,
 		timeRemaining: 0,
 		questionsAnswered: 0,
-		gameEnded: false
+		gameEnded: false,
 	});
 
 	let timerInterval: ReturnType<typeof setInterval> | null = null;
@@ -51,7 +51,7 @@ import { page } from "$app/stores";
 
 	// Handle mouse player creation/removal when controllers connect/disconnect
 	const handleMousePlayerForControllers = () => {
-		const hasActiveControllers = Object.values(players).some(player => player.active && !player.isMouse);
+		const hasActiveControllers = Object.values(players).some((player) => player.active && !player.isMouse);
 		const mouseIndex = 4;
 
 		// If controllers are connected and we have a mouse player, remove it (unless manually added)
@@ -127,7 +127,7 @@ import { page } from "$app/stores";
 	};
 
 	// Function to update a specific player
-	const updatePlayer = (playerIndex: number, updates: Partial<typeof players[0]>) => {
+	const updatePlayer = (playerIndex: number, updates: Partial<(typeof players)[0]>) => {
 		if (players[playerIndex]) {
 			players[playerIndex] = { ...players[playerIndex], ...updates };
 		}
@@ -144,7 +144,7 @@ import { page } from "$app/stores";
 					y: 0,
 					lastMovement: Date.now(),
 					currentSelection: 0,
-					selected: false
+					selected: false,
 				};
 			}
 		});
@@ -159,13 +159,17 @@ import { page } from "$app/stores";
 
 	// Create reactive scores context - use gameScores for live updates, displayScores for UI
 	let scoresContext = $state({
-		get scores() { return gameScores; },
-		get displayScores() { return displayScores; },
+		get scores() {
+			return gameScores;
+		},
+		get displayScores() {
+			return displayScores;
+		},
 		updateDisplay: () => {
 			displayScores = { ...gameScores };
 			score.value = { ...gameScores };
 		},
-		updatePlayerScore
+		updatePlayerScore,
 	});
 
 	// svelte-ignore state_referenced_locally
@@ -186,10 +190,12 @@ import { page } from "$app/stores";
 	$effect(() => {
 		if (gameStateStorage.value) {
 			// Only update if there are actual differences
-			if (gameState.timerEnabled !== gameStateStorage.value.timerEnabled ||
+			if (
+				gameState.timerEnabled !== gameStateStorage.value.timerEnabled ||
 				gameState.timeRemaining !== gameStateStorage.value.timeRemaining ||
 				gameState.questionsAnswered !== gameStateStorage.value.questionsAnswered ||
-				gameState.gameEnded !== gameStateStorage.value.gameEnded) {
+				gameState.gameEnded !== gameStateStorage.value.gameEnded
+			) {
 				gameState = { ...gameStateStorage.value };
 			}
 		}
@@ -223,7 +229,7 @@ import { page } from "$app/stores";
 		}
 
 		// Restore mouse players from saved state (mouse players don't need gamepad references)
-		Object.keys(savedPlayers).forEach(key => {
+		Object.keys(savedPlayers).forEach((key) => {
 			const playerIndex = Number(key);
 			const savedPlayer = savedPlayers[playerIndex];
 			if (savedPlayer?.isMouse && savedPlayer.active) {

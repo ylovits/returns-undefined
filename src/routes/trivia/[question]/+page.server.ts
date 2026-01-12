@@ -16,4 +16,4 @@ export const load: PageServerLoad = ({ params }) => {
 		isLastQuestion,
 		totalQuestions: questions.length,
 	};
-}
+};

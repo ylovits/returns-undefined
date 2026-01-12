@@ -40,9 +40,9 @@
 					margin: 0;
 					padding: 0;
 					filter: url(#pixelate-sm);
-                    &.pentagon {
-                        filter: url(#pixelate-xs);
-                    }
+					&.pentagon {
+						filter: url(#pixelate-xs);
+					}
 				}
 
 				.points {
@@ -194,6 +194,173 @@
 					vertical-align: baseline;
 					max-width: calc(100% - 18rem);
 					z-index: 2;
+				}
+			}
+		}
+	}
+}
+
+// Mobile responsive styles for trivia pages
+@media (max-width: 768px), (max-height: 1024px) and (orientation: portrait) {
+	#app .trivia {
+		// Apply less pixelation to ALL player elements in trivia on mobile
+		.player {
+			filter: url(#pixelate-xs) !important;
+		}
+
+		.score {
+			top: 0.5rem;
+			right: 0.5rem;
+			scale: 1; // Remove scaling to make it larger
+
+			&.players {
+				.wrapper {
+					width: 3.5rem; // Make wrapper larger
+					margin: 0 0.5rem;
+
+					.player {
+						width: 3rem; // Make player avatar larger
+						height: 3rem;
+						filter: url(#pixelate-xs) !important; // Less pixelation on mobile
+					}
+
+					.points {
+						font-size: 1.4rem; // Larger font for points
+						font-weight: bold;
+					}
+				}
+			}
+		}
+
+		.question {
+			width: 95vw;
+			padding-bottom: 0.5rem;
+
+			h1 {
+				font-size: 2.2rem;
+				margin-bottom: 2rem;
+				width: 95%;
+
+				pre {
+					padding: 0.75rem 1rem;
+					margin: 0.75rem;
+					font-size: 0.9em;
+				}
+			}
+
+			.answers {
+				&-wrapper {
+					width: 95%;
+
+					.players {
+						right: 1rem;
+
+						.player {
+							width: 3rem;
+							margin: 0.75rem 0;
+							filter: url(#pixelate-xs) !important; // Less pixelation for mobile
+						}
+					}
+				}
+
+				li {
+					margin: 0.75rem 0;
+					padding: 1.25rem 2rem;
+
+					&.answer-option {
+						.answer-button {
+							.text {
+								font-size: 2.2rem;
+								line-height: 1.8rem;
+								max-width: calc(100% - 12rem);
+							}
+						}
+					}
+
+					.text {
+						font-size: 2.2rem;
+						line-height: 1.8rem;
+						max-width: calc(100% - 12rem);
+					}
+				}
+			}
+		}
+	}
+}
+
+@media (max-width: 480px) {
+	#app .trivia {
+		// Apply less pixelation to ALL player elements in trivia on small screens
+		.player {
+			filter: url(#pixelate-xs) !important;
+		}
+
+		.score {
+			scale: 0.9; // Less aggressive scaling
+
+			&.players {
+				.wrapper {
+					width: 3rem; // Keep reasonable size
+					margin: 0 0.25rem;
+
+					.player {
+						width: 2.5rem; // Keep visible size
+						height: 2.5rem;
+						filter: url(#pixelate-xs) !important; // Less pixelation on small screens too
+					}
+
+					.points {
+						font-size: 1.2rem; // Keep readable
+						font-weight: bold;
+					}
+				}
+			}
+		}
+
+		.question {
+			h1 {
+				font-size: 1.8rem;
+				margin-bottom: 1.5rem;
+
+				pre {
+					padding: 0.5rem 0.75rem;
+					margin: 0.5rem;
+					font-size: 0.8em;
+				}
+			}
+
+			.answers {
+				&-wrapper {
+					.players {
+						right: 0.5rem;
+
+						.player {
+							width: 2.5rem;
+							margin: 0.5rem 0;
+							filter: url(#pixelate-xs) !important; // Less pixelation for small screens too
+						}
+					}
+				}
+
+				li {
+					margin: 0.5rem 0;
+					padding: 1rem 1.5rem;
+
+					&.answer-option {
+						.answer-button {
+							.text {
+								font-size: 1.8rem;
+								line-height: 1.5rem;
+								max-width: calc(100% - 4rem);
+							}
+						}
+					}
+
+					.text {
+						font-size: 1.8rem;
+						line-height: 1.5rem;
+						max-width: calc(100% - 4rem);
+					}
 				}
 			}
 		}

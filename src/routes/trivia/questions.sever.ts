@@ -78,15 +78,15 @@ export const questions: Question[] = [
 		correctAnswerIndex: 2,
 	},
 	{
-    text: `<pre class='code'>null instanceof Object</pre> returns:`,
+		text: `<pre class='code'>null instanceof Object</pre> returns:`,
 		options: [`true`, `null`, `false`, `undefined`],
 		correctAnswerIndex: 2,
 	},
-  {
-    text: `<pre class='code'>null == undefined</pre> returns:`,
-    options: [`false`, `null`, `true`, `undefined`],
-    correctAnswerIndex: 2,
-  },
+	{
+		text: `<pre class='code'>null == undefined</pre> returns:`,
+		options: [`false`, `null`, `true`, `undefined`],
+		correctAnswerIndex: 2,
+	},
 	{
 		text: `<pre class='code'>"cat" instanceof String</pre> returns:`,
 		options: [`undefined`, `true`, `false`, `null`],
@@ -123,23 +123,20 @@ export const questions: Question[] = [
 		correctAnswerIndex: 2,
 	},
 	{
-		text: `<pre class='code'>1 + ~"Morten"</pre> returns:`,
+		text: `<pre class='code'>1 + ~"JavaScript"</pre> returns:`,
 		options: [`1`, `-1`, `NaN`, `0`],
 		correctAnswerIndex: 3,
 	},
 	{
-		text: `<pre class='code'>
-		const arr = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10].sort();
-arr[2]
-</pre> returns:`,
+		text: `<pre class='code'>const arr = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10].sort(); arr[2]; </pre> returns:`,
 		options: ["2", "8", "3", "10"],
-		correctAnswerIndex: 1,
+		correctAnswerIndex: 3,
 	},
 
 	{
-		text: `<pre class='code'>"Athinodoros".replace(/o/, "X");</pre> returns:`,
-		options: [`'AthinXdXrXs'`, `'AthinXdoros'`, `'XXXXXXXXXXX'`, `'AXXinXXXrXs'`],
-		correctAnswerIndex: 1,
+		text: `<pre class='code'>"JavaScript".replace(/a/, "X");</pre> returns:`,
+		options: [`'JXvaScript'`, `'JXvXScript'`, `'XXXXXXXXXXX'`, `'JavXScript'`],
+		correctAnswerIndex: 0,
 	},
 	{
 		text: `<pre class='code'>"3" + "2"</pre> returns:`,
@@ -183,7 +180,11 @@ a === b;
 	{
 		text: `<pre class='code'>
 let a = {};
-let b = JSON.parse(JSON.stringify(a));
+let b = JSON.parse(
+  JSON.stringify(
+    a
+  )
+);
 a === b;
 </pre> returns:`,
 		options: [`false`, `true`, `null`, `undefined`],
@@ -193,6 +194,11 @@ a === b;
 		text: `<pre class='code'>Math.max();</pre> returns:`,
 		options: [`Infinity`, `0`, `-Infinity`, `NaN`],
 		correctAnswerIndex: 2,
+	},
+  {
+		text: `<pre class='code'>-Math.max();</pre> returns:`,
+		options: [`Infinity`, `0`, `-Infinity`, `NaN`],
+		correctAnswerIndex: 0,
 	},
 	{
 		text: `<pre class='code'>typeof Number(123)</pre> returns:`,
@@ -205,24 +211,14 @@ a === b;
 		correctAnswerIndex: 1,
 	},
 	{
-		text: `<pre class='code'>typeof Number("Roxhers");</pre> returns:`,
-		options: [`"string"`, `"undefined"`, `"number"`, `"NaN"`],
+		text: `<pre class='code'>typeof Number("JS");</pre> returns:`,
+		options: [`"object"`, `"Number"`, `"number"`, `"NaN"`],
 		correctAnswerIndex: 2,
 	},
 	{
-		text: `<pre class='code'>Number("Klara")</pre> returns:`,
+		text: `<pre class='code'>Number("JS")</pre> returns:`,
 		options: [`0`, `null`, `NaN`, `undefined`],
 		correctAnswerIndex: 2,
-	},
-	{
-		text: `<pre class='code'>
-const Dev = function(name) {
-    this.name = name || "Sameda";
-}
-const dev = Dev("Rando");
-</pre> returns:`,
-		options: [`dev.name === "Rando"`, `window.name === "Rando"`, `Dev.name === "Sameda"`, `this.name === Dev.name`],
-		correctAnswerIndex: 1,
 	},
 	{
 		text: `<pre class='code'>
@@ -259,7 +255,7 @@ var x = 3;
 (() => {
     console.log(x);
     var x;
-})()
+})();
 </pre> returns:`,
 		options: [`3`, `null`, `undefined`, `ReferenceError`],
 		correctAnswerIndex: 2,
@@ -458,7 +454,15 @@ function wtf({ x = 32 } = {}) {
 		],
 		correctAnswerIndex: 1,
 	},
-
+	{
+		text: `<pre class='code'>
+const Dev = (name) =>  this.name = name || "Sameda";
+const dev = Dev("Rando");
+dev.name
+</pre> returns:`,
+		options: [`dev.name === "Rando"`, `window.name === "Rando"`, `Dev.name === "Sameda"`, `this.name === Dev.name`],
+		correctAnswerIndex: 1,
+	},
 	{
 		text: `<pre class='code'>
 new (

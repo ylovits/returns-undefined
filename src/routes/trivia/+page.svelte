@@ -118,23 +118,14 @@
 		</ul> -->
 		<ul class="answers" bind:this={wrapperElm}>
 			{#each data.question.options as option, i}
-				<li
-					id={`answer-${i + 1}`}
-					bind:this={answerElements[i]}
-					class="answer-option"
-				>
-					<button
-						class="answer-button"
-						onclick={() => handleAnswerClick(i)}
-						type="button"
-					>
+				<li id={`answer-${i + 1}`} bind:this={answerElements[i]} class="answer-option">
+					<button class="answer-button" onclick={() => handleAnswerClick(i)} type="button">
 						<span class={`back ${getClasses(i)}`}></span>
 						<p class="text">{option}</p>
 					</button>
 				</li>
 			{/each}
 		</ul>
-
 	</span>
 </div>
 <button class="nextBtn" disabled={!allAnswered} onclick={() => handleClick()}>{buttonText}</button>

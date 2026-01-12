@@ -6,7 +6,7 @@ export const prerender = true;
 // Generate entries for all possible question routes
 export async function entries() {
 	return questions.map((_, index) => ({
-		question: index.toString()
+		question: index.toString(),
 	}));
 }
 
