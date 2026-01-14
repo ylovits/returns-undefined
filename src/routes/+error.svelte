@@ -9,7 +9,7 @@
 
 <div class="errorPage">
 	<h1>{page.status} - {page.error!.message}</h1>
-	<span style="font-size: 10em">
+	<span style="font-size: 6.5em">
 		{errorEmojis[page.status] ?? errorEmojis[500]}
 	</span>
 </div>

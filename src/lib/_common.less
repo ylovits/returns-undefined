@@ -1,24 +1,13 @@
 @import url("$lib/_vars.less");
 
+@import url('https://fonts.googleapis.com/css2?family=Jersey+10&display=swap');
+
+
+
 @font-face {
-	font-family: "Vaticanus";
+	font-family: "Snowbell";
 	src:
-		url("/fonts/Vaticanus.woff2") format("woff2"),
-		url("/fonts/Vaticanus.woff") format("woff");
-	font-weight: normal;
-	font-style: normal;
-}
-
-@font-face {
-	font-family: "Pixelon";
-	src: url("/fonts/Pixelon.woff") format("woff");
-	font-weight: normal;
-	font-style: normal;
-}
-
-@font-face {
-	font-family: "PixeloidBold";
-	src: url("/fonts/PixeloidSansBold.woff") format("woff");
+		url("/fonts/Snowbell.woff2") format("woff2");
 	font-weight: normal;
 	font-style: normal;
 }
@@ -35,7 +24,8 @@
 	justify-content: center;
 	background: @primary-xxd;
 	color: @primary-xxl;
-	font-family: "Pixelon", monospace;
+	font-family: "Snowbell", monospace;
+-webkit-tap-highlight-color: transparent;
 
 	main {
 		flex: 1;
@@ -49,13 +39,14 @@
 			padding: 0.5rem 1rem;
 			border-radius: 0.3rem;
 			text-decoration: none;
-			font-size: 2rem;
+			font-size: 1.3rem;
 			cursor: pointer;
 			border: none;
 			background: darken(@primary-xd, 15%);
 			color: @primary-m;
 			z-index: 2;
-			font-family: "Pixelon", monospace;
+			font-family: "Snowbell", monospace;
+      -webkit-tap-highlight-color: transparent;
 
 			&:hover {
 				background: darken(@primary-xd, 18%);
@@ -82,7 +73,7 @@
 				right: 1rem;
 				left: auto; // Remove left positioning
 				padding: 0.75rem 1.5rem;
-				font-size: 1.8rem;
+				font-size: 1.17rem;
 				border-radius: 0.5rem;
 				min-height: 44px;
 				width: auto; // Let it size to content
@@ -101,7 +92,7 @@
 				right: 1rem;
 				left: auto; // Remove left positioning for small screens too
 				padding: 0.75rem 1.25rem;
-				font-size: 1.6rem;
+				font-size: 1.04rem;
 				text-align: center;
 				width: auto; // Let it size to content
 			}

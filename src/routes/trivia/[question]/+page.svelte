@@ -192,25 +192,85 @@
 			.trim();
 		const style = "padding: 1rem; background-color: black; color: white; font-size: 1em;";
 
+		// Split by semicolons while respecting nested blocks (braces, parens, brackets)
+		function splitTopLevelSemicolons(code: string): string[] {
+			const statements: string[] = [];
+			let current = '';
+			let depth = { braces: 0, parens: 0, brackets: 0 };
+			let inString = false;
+			let stringChar = '';
+			let inTemplate = false;
+			let templateDepth = 0;
+
+			for (let i = 0; i < code.length; i++) {
+				const char = code[i];
+				const prevChar = i > 0 ? code[i - 1] : '';
+
+				// Track string literals
+				if ((char === '"' || char === "'") && prevChar !== '\\' && !inTemplate) {
+					if (!inString) {
+						inString = true;
+						stringChar = char;
+					} else if (char === stringChar) {
+						inString = false;
+					}
+				}
+
+				// Track template literals
+				if (char === '`' && prevChar !== '\\') {
+					if (!inTemplate) {
+						inTemplate = true;
+						templateDepth = 1;
+					} else {
+						templateDepth--;
+						if (templateDepth === 0) inTemplate = false;
+					}
+				}
+
+				if (!inString && !inTemplate) {
+					if (char === '{') depth.braces++;
+					if (char === '}') depth.braces--;
+					if (char === '(') depth.parens++;
+					if (char === ')') depth.parens--;
+					if (char === '[') depth.brackets++;
+					if (char === ']') depth.brackets--;
+
+					// Split on semicolon if we're at top level
+					if (char === ';' && depth.braces === 0 && depth.parens === 0 && depth.brackets === 0) {
+						statements.push(current.trim());
+						current = '';
+						continue;
+					}
+				}
+
+				current += char;
+			}
+
+			// Add remaining code if any
+			if (current.trim()) {
+				statements.push(current.trim());
+			}
+
+			return statements.filter(s => s);
+		}
+
 		try {
 			let func;
-			// Check if code has multiple statements (separated by semicolons)
-			if (cleanedText.includes(';')) {
-				// Split by semicolon and handle multi-statement code
-				const statements = cleanedText.split(';').map(s => s.trim()).filter(s => s);
-				if (statements.length > 1) {
-					// Take the last statement/expression as the return value
-					const lastStatement = statements.pop();
-					const otherStatements = statements.join(';');
-					func = new Function(`${otherStatements}; return (${lastStatement});`);
-				} else {
-					// Single statement ending with semicolon
-					func = new Function(`return (${statements[0]})`);
-				}
+			const statements = splitTopLevelSemicolons(cleanedText);
+
+			if (statements.length > 1) {
+				// Multiple top-level statements: execute all but last, then return last
+				const lastStatement = statements.pop()!;
+				const otherStatements = statements.join('; ');
+				func = new Function(`${otherStatements}; return (${lastStatement});`);
+			} else if (statements.length === 1) {
+				// Single statement: try to return it
+				func = new Function(`return (${statements[0]})`);
 			} else {
-				// Single expression without semicolon
+				// No statements (shouldn't happen, but fallback)
 				func = new Function(`return ${cleanedText}`);
 			}
+
 			const result = func();
 			console.log("%c" + cleanedText + " returns: ", style, result);
 		} catch (error) {

@@ -59,7 +59,7 @@
 		align-items: center;
 		gap: 8px;
 		font-family: monospace;
-		font-size: 18px;
+		font-size: 11.7px;
 		font-weight: bold;
 		z-index: 1000;
 		border: 2px solid #4a90e2;
@@ -79,7 +79,7 @@
 		}
 
 		.timer-text {
-			font-family: "Pixelon", monospace;
+			font-family: "Snowbell", monospace;
 			letter-spacing: 1px;
 			z-index: 1001;
 			transition: font-size 0.1s ease-out;

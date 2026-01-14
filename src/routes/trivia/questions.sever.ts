@@ -74,7 +74,7 @@ export const questions: Question[] = [
 	},
 	{
 		text: `<pre class='code'>typeof null</pre> returns:`,
-		options: [`'null'`, `'undefined'`, `'object'`, `'number'`],
+		options: [`"null"`, `"undefined"`, `"object"`, `"number"`],
 		correctAnswerIndex: 2,
 	},
 	{
@@ -99,7 +99,7 @@ export const questions: Question[] = [
 	},
 	{
 		text: `<pre class='code'>typeof NaN</pre> returns:`,
-		options: [`'undefined'`, `'object'`, `'NaN'`, `'number'`],
+		options: [`"undefined"`, `"object"`, `"NaN"`, `"number"`],
 		correctAnswerIndex: 3,
 	},
 	{
@@ -109,17 +109,17 @@ export const questions: Question[] = [
 	},
 	{
 		text: `<pre class='code'>9999999999999999</pre> returns:`,
-		options: [`9999999999999999`, `10000000000000000`, `Infinity`, `NaN`],
-		correctAnswerIndex: 1,
+		options: [ `Infinity`, `9999999999999999`, `NaN`,`10000000000000000`],
+		correctAnswerIndex: 3,
 	},
 	{
 		text: `<pre class='code'>3 + ""</pre> returns:`,
-		options: [`3`, `'3'`, `NaN`, `undefined`],
+		options: [`3`, `"3"`, `NaN`, `undefined`],
 		correctAnswerIndex: 1,
 	},
 	{
 		text: `<pre class='code'>3 + + ""</pre> returns:`,
-		options: [`'3'`, `NaN`, `3`, `0`],
+		options: [`"3"`, `NaN`, `3`, `0`],
 		correctAnswerIndex: 2,
 	},
 	{
@@ -128,14 +128,23 @@ export const questions: Question[] = [
 		correctAnswerIndex: 3,
 	},
 	{
-		text: `<pre class='code'>const arr = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10].sort(); arr[2]; </pre> returns:`,
+		text: `<pre class='code'>
+const arr = [
+0,1,2,3,4,5,6,7,8,9,10
+].sort(); 
+
+arr[2]; 
+</pre> returns:`,
 		options: ["2", "8", "3", "10"],
 		correctAnswerIndex: 3,
 	},
 
 	{
-		text: `<pre class='code'>"JavaScript".replace(/a/, "X");</pre> returns:`,
-		options: [`'JXvaScript'`, `'JXvXScript'`, `'XXXXXXXXXXX'`, `'JavXScript'`],
+		text: `<pre class='code'>
+"JavaScript"
+.replace(/a/, "X");
+    </pre> returns:`,
+		options: [`"JXvaScript"`, `"JXvXScript"`, `"XXXXXXXXXXX"`, `"JavXScript"`],
 		correctAnswerIndex: 0,
 	},
 	{
@@ -155,10 +164,55 @@ export const questions: Question[] = [
 	},
 	{
 		text: `<pre class='code'>typeof []</pre> returns:`,
-		options: [`'array'`, `'object'`, `'undefined'`, `'function'`],
+		options: [`"array"`, `"object"`, `"undefined"`, `"function"`],
 		correctAnswerIndex: 1,
 	},
 	{
+		text: `<pre class='code'>[] + {}</pre> returns:`,
+		options: [`"[object Object]"`, `"{}"`, `"[]"`, `NaN`],
+		correctAnswerIndex: 0,
+	},
+	{
+		text: `<pre class='code'>{} + []</pre> returns:`,
+		options: [`"[object Object]"`, `0`, `NaN`, `"[]"`],
+		correctAnswerIndex: 1,
+	},
+	{
+		text: `<pre class='code'>{} + {}</pre> returns:`,
+		options: [`"[object Object][object Object]"`, `NaN`, `0`, `"[object Object]"`],
+		correctAnswerIndex: 1,
+	},
+	{
+		text: `<pre class='code'>[] + []</pre> returns:`,
+		options: [`"[][]"`, `""`, `0`, `NaN`],
+		correctAnswerIndex: 1,
+	},
+	{
+		text: `<pre class='code'>"b" + "a" + +"a" + "a"</pre> returns:`,
+		options: [`"baaa"`, `"baNaNa"`, `"banana"`, `NaN`],
+		correctAnswerIndex: 1,
+	},
+	{
+		text: `<pre class='code'>[1, 2] + [3, 4, 5]</pre> returns:`,
+		options: [`"1,2,3,4,5"`, `"1,23,4,5"`, `NaN`, `[1,2,3,4,5]`],
+		correctAnswerIndex: 1,
+	},
+	{
+		text: `<pre class='code'>+true</pre> returns:`,
+		options: [`true`, `1`, `0`, `NaN`],
+		correctAnswerIndex: 1,
+	},
+	{
+		text: `<pre class='code'>true + true</pre> returns:`,
+		options: [`"truetrue"`, `1`, `2`, `true`],
+		correctAnswerIndex: 2,
+	},
+	{
+		text: `<pre class='code'>+(+true + \`${+false}\`)</pre> returns:`,
+		options: [`1`, `10`, `"10"`, `NaN`],
+		correctAnswerIndex: 1,
+	},
+  {
 		text: `<pre class='code'>
 let a = {};
 let b = a;
@@ -202,17 +256,17 @@ a === b;
 	},
 	{
 		text: `<pre class='code'>typeof Number(123)</pre> returns:`,
-		options: [`"object"`, `"Number"`, `"number"`, `123`],
+		options: [`"object"`, `Number`, `"number"`, `123`],
 		correctAnswerIndex: 2,
 	},
 	{
 		text: `<pre class='code'>typeof new Number("123"); </pre> returns:`,
-		options: [`"number"`, `"object"`, `"Number"`, `123`],
+		options: [`"number"`, `"object"`, `Number`, `123`],
 		correctAnswerIndex: 1,
 	},
 	{
 		text: `<pre class='code'>typeof Number("JS");</pre> returns:`,
-		options: [`"object"`, `"Number"`, `"number"`, `"NaN"`],
+		options: [`"object"`, `Number`, `"number"`, `"NaN"`],
 		correctAnswerIndex: 2,
 	},
 	{
@@ -264,6 +318,7 @@ var x = 3;
 		text: `<pre class='code'>
 (() => {
 	var aaaa = bbbb = 4
+  console.log(bbbb);
 })()
 </pre> returns:`,
 		options: [
@@ -276,8 +331,8 @@ var x = 3;
 	},
 	{
 		text: `<pre class='code'>
-undefined = 2
-undefined + 1
+undefined = 2;
+undefined + 1;
 </pre> returns:`,
 		options: [
 			"3",
@@ -285,67 +340,22 @@ undefined + 1
 			"Uncaught SyntaxError: Invalid left - hand side in assignment",
 			"Uncaught ReferenceError: undefined is not defined",
 		],
-		correctAnswerIndex: 0,
+		correctAnswerIndex: 1,
 	},
 	{
 		text: `<pre class='code'>
 (
 	function(a) {
-    	a = "Jasmina";
+    	a = "JavaScript";
     	return arguments[0];
 	}
 )(1)
 </pre> returns:`,
-		options: ["undefined", "1", '"Jasmina"', "Uncaught ReferenceError: arguments is not defined"],
+		options: ["undefined", "1", '"JavaScript"', "Uncaught ReferenceError: arguments is not defined"],
 		correctAnswerIndex: 2,
 	},
 	{
-		text: `<pre class='code'>[] + {}</pre> returns:`,
-		options: [`'[object Object]'`, `'{}'`, `'[]'`, `NaN`],
-		correctAnswerIndex: 0,
-	},
-	{
-		text: `<pre class='code'>{} + []</pre> returns:`,
-		options: [`'[object Object]'`, `0`, `NaN`, `'[]'`],
-		correctAnswerIndex: 1,
-	},
-	{
-		text: `<pre class='code'>{} + {}</pre> returns:`,
-		options: [`'[object Object][object Object]'`, `NaN`, `0`, `'[object Object]'`],
-		correctAnswerIndex: 1,
-	},
-	{
-		text: `<pre class='code'>[] + []</pre> returns:`,
-		options: [`'[][]'`, `""`, `0`, `NaN`],
-		correctAnswerIndex: 1,
-	},
-	{
-		text: `<pre class='code'>"b" + "a" + +"a" + "a"</pre> returns:`,
-		options: [`'baaa'`, `'baNaNa'`, `'banana'`, `NaN`],
-		correctAnswerIndex: 1,
-	},
-	{
-		text: `<pre class='code'>[1, 2] + [3, 4, 5]</pre> returns:`,
-		options: [`'1,2,3,4,5'`, `'1,23,4,5'`, `NaN`, `[1,2,3,4,5]`],
-		correctAnswerIndex: 1,
-	},
-	{
-		text: `<pre class='code'>+true</pre> returns:`,
-		options: [`true`, `1`, `0`, `NaN`],
-		correctAnswerIndex: 1,
-	},
-	{
-		text: `<pre class='code'>true + true</pre> returns:`,
-		options: [`'truetrue'`, `1`, `2`, `true`],
-		correctAnswerIndex: 2,
-	},
-	{
-		text: `<pre class='code'>+(+true + \`${+false}\`)</pre> returns:`,
-		options: [`1`, `10`, `'10'`, `NaN`],
-		correctAnswerIndex: 1,
-	},
-	{
-		text: `<pre class='code'>2 < 3 > 1</pre> returns:`,
+		text: `<pre class='code'>2 < 3 >  1</pre> returns:`,
 		options: [`true`, `false`, `null`, `undefined`],
 		correctAnswerIndex: 1,
 	},
@@ -482,7 +492,7 @@ new (
 	},
 	{
 		text: `<pre class='code'>("b" + "a" + + "a" + "a").toLowerCase();</pre> returns:`,
-		options: [`'baNaNa'`, `banana`, `'baaa'`, `'baan'`],
+		options: [`"baNaNa"`, `"banana"`, `"baaa"`, `"baan"`],
 		correctAnswerIndex: 1,
 	},
 	{
@@ -492,17 +502,17 @@ new (
 	},
 	{
 		text: `<pre class='code'>2 + "2" + 2</pre> returns:`,
-		options: [`6`, `'222'`, `'22'`, `222`],
+		options: [`6`, `"222"`, `"22"`, `222`],
 		correctAnswerIndex: 1,
 	},
 	{
 		text: `<pre class='code'>2 + "2" - 2</pre> returns:`,
-		options: [`2`, `20`, `'20'`, `18`],
+		options: [`2`, `20`, `"20"`, `18`],
 		correctAnswerIndex: 1,
 	},
 	{
 		text: `<pre class='code'>(+(!+[]+!+[]+!+[]+[!+[]+!+[]]))[(!![]+[])[+[]]+(!![]+[][(![]+[])[+!+[]]+(!![]+[])[+[]]])[+!+[]+[+[]]]+([]+[])[([][(![]+[])[+!+[]]+(!![]+[])[+[]]]+[])[!+[]+!+[]+!+[]]+(!![]+[][(![]+[])[+!+[]]+(!![]+[])[+[]]])[+!+[]+[+[]]]+([][[]]+[])[+!+[]]+(![]+[])[!+[]+!+[]+!+[]]+(!![]+[])[+[]]+(!![]+[])[+!+[]]+([][[]]+[])[+[]]+([][(![]+[])[+!+[]]+(!![]+[])[+[]]]+[])[!+[]+!+[]+!+[]]+(!![]+[])[+[]]+(!![]+[][(![]+[])[+!+[]]+(!![]+[])[+[]]])[+!+[]+[+[]]]+(!![]+[])[+!+[]]][([][[]]+[])[+!+[]]+(![]+[])[+!+[]]+((+[])[([][(![]+[])[+!+[]]+(!![]+[])[+[]]]+[])[!+[]+!+[]+!+[]]+(!![]+[][(![]+[])[+!+[]]+(!![]+[])[+[]]])[+!+[]+[+[]]]+([][[]]+[])[+!+[]]+(![]+[])[!+[]+!+[]+!+[]]+(!![]+[])[+[]]+(!![]+[])[+!+[]]+([][[]]+[])[+[]]+([][(![]+[])[+!+[]]+(!![]+[])[+[]]]+[])[!+[]+!+[]+!+[]]+(!![]+[])[+[]]+(!![]+[][(![]+[])[+!+[]]+(!![]+[])[+[]]])[+!+[]+[+[]]]+(!![]+[])[+!+[]]]+[])[+!+[]+[+!+[]]]+(!![]+[])[!+[]+!+[]+!+[]]]](!+[]+!+[]+!+[]+[!+[]+!+[]+!+[]])+(!![]+[])[+[]]+(![]+[])[+[]]</pre> returns:`,
-		options: [`undefined`, `wtf`, `'wtf'`, `NaN`],
+		options: [`undefined`, `null`, `"wtf"`, `NaN`],
 		correctAnswerIndex: 1,
 	},
 ];
