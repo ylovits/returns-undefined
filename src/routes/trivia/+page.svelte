@@ -40,6 +40,21 @@
 
 	let highlightedQuestionText = $derived<string>(processQuestionText(data.question.text));
 
+	// Track if we've started auto-navigating to prevent multiple triggers
+	let autoNavigating = $state<boolean>(false);
+
+	// Auto-navigate when all players answered correctly
+	$effect(() => {
+		if (allAnswered && allCorrect && !autoNavigating && activePlayers > 0) {
+			autoNavigating = true;
+
+			// Wait 1.5 seconds so players can see they got it right before starting the game
+			setTimeout(() => {
+				handleClick();
+			}, 1500);
+		}
+	});
+
 	const getClasses = (i: number) => {
 		const correct = readyPlayers > 0 && allAnswered && data.question.correctAnswerIndex === i;
 		const selected = Object.keys(players).some((playerKey) => players[Number(playerKey)].currentSelection === i);
@@ -64,6 +79,7 @@
 		});
 		scoresContext.scores = currentScore;
 		score.value = currentScore;
+		autoNavigating = false; // Reset auto-navigation flag when resetting
 	};
 
 	// Handle mouse click on answer options for mouse players

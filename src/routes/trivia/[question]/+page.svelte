@@ -64,6 +64,9 @@
 	// Track if confetti has been shown for this question
 	let confettiShown = $state<boolean>(false);
 
+	// Track if we've started auto-navigating to prevent multiple triggers
+	let autoNavigating = $state<boolean>(false);
+
 	// Check if any player has selected an answer on the last question
 	let anyPlayerSelected = $derived<boolean>(
 		Object.keys(players).some((playerKey) => players[Number(playerKey)].selected)
@@ -102,6 +105,28 @@
 			}
 			frame();
 		}
+	});
+
+	// Auto-navigate to next question when all players have answered
+	$effect(() => {
+		if (allAnswered && !autoNavigating && activePlayers > 0) {
+			autoNavigating = true;
+
+			// Wait 1.5 seconds so players can see the correct answer before moving on
+			const delay = data.isLastQuestion ? 2000 : 1500; // Slightly longer delay on last question for confetti
+
+			setTimeout(() => {
+				handleClick();
+			}, delay);
+		}
+	});
+
+	// Reset auto-navigation flag when question changes
+	$effect(() => {
+		// Whenever the question data changes, reset the flag
+		data.questionNumber;
+		autoNavigating = false;
+		confettiShown = false;
 	});
 
 	const getClasses = (i: number) => {
