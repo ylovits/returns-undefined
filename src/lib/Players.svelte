@@ -94,9 +94,6 @@
 					const { pressing, yAxisSum, xAxisSum } = mainControls(myGamepad);
 
 					if (landingPage) {
-						const newY = gamepadPlayer.selected ? gamepadPlayer.y : yAxisSum * 60;
-						playersContext.updatePlayer(myGamepad.index, { y: newY });
-
 						if (pressing) {
 							myGamepad.vibrationActuator.playEffect("trigger-rumble", {
 								startDelay: 0,
@@ -104,9 +101,15 @@
 								weakMagnitude: 1,
 								strongMagnitude: 1,
 							});
-							const newX = gamepadPlayer.x + Math.floor(Math.random() * 21 * multiplier) - 11 * multiplier;
-							const finalY = gamepadPlayer.y + Math.floor(Math.random() * 21 * multiplier) - 10 * multiplier;
-							playersContext.updatePlayer(myGamepad.index, { x: newX, y: finalY });
+							// Wiggle around base position (0,0) with small random offsets
+							const wiggleX = (Math.random() * 20 - 10) * multiplier;
+							const wiggleY = (Math.random() * 20 - 10) * multiplier;
+							playersContext.updatePlayer(myGamepad.index, { x: wiggleX, y: wiggleY });
+						} else {
+							// Normal stick movement when not pressing buttons
+							const newY = gamepadPlayer.selected ? gamepadPlayer.y : yAxisSum * 60;
+							const newX = xAxisSum * 12 * multiplier;
+							playersContext.updatePlayer(myGamepad.index, { x: newX, y: newY });
 						}
 					} else {
 						if (!answerPositions.length && props.answerElements) {
@@ -196,9 +199,11 @@
 						}
 					}
 
-					// Allow rotation on all pages - temporary while holding stick
-					const newX = landingPage ? xAxisSum * 12 * multiplier : xAxisSum * 6;
-					playersContext.updatePlayer(myGamepad.index, { x: newX });
+					// Allow rotation on quiz pages - temporary while holding stick
+					if (!landingPage) {
+						const newX = xAxisSum * 6;
+						playersContext.updatePlayer(myGamepad.index, { x: newX });
+					}
 				}
 			});
 			// score.value = currentScore;
