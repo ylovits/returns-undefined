@@ -2,6 +2,8 @@
 
 A multiplayer JavaScript trivia game built with SvelteKit 5 and TypeScript. Test your knowledge of JavaScript's quirky behavior with gamepad controllers!
 
+**Play now**: https://ylovits.github.io/returns-undefined
+
 ## 🎮 Game Features
 
 - **Multiplayer Support**: Up to 4 players using gamepad controllers
@@ -95,32 +97,3 @@ src/
 - **Syntax Highlighting**: Prism.js for JavaScript code snippets
 - **Build Tool**: Vite
 - **Package Manager**: pnpm (managed by Volta)
-
-## 🚀 Deployment
-
-```bash
-# Build for production
-pnpm run build
-
-# The built files will be in the `build` directory
-# Deploy using your preferred static hosting service
-```
-
-## 🤝 Contributing
-
-1. Ensure you have Volta installed
-2. Clone the repository
-3. Run `pnpm install` (Volta handles the rest)
-4. Make your changes
-5. Run `pnpm run lint` and `pnpm run check` before committing
-
-## 📝 Adding Questions
-
-Questions are stored in `src/routes/trivia/questions.sever.ts`. Each question should have:
-
-- Descriptive text with code snippets in `<pre class='code'>` tags
-- Exactly 4 answer options
-- A randomized `correctAnswerIndex`
-- Proper TypeScript typing
-
-The syntax highlighting system will automatically highlight JavaScript code in `<pre class='code'>` blocks.
