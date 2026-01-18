@@ -24,7 +24,7 @@ export const questions: Question[] = [
 	},
 	{
 		text: "<pre class='code'>!![]</pre> returns:",
-		options: ["'object'", "'[object Object]'", "false", "true"],
+		options: [`"object"`, `"[object Object]"`, "false", "true"],
 		correctAnswerIndex: 3,
 	},
 	{
@@ -208,7 +208,7 @@ arr[2];
 		correctAnswerIndex: 2,
 	},
 	{
-		text: `<pre class='code'>+(+true + \`${+false}\`)</pre> returns:`,
+		text: `<pre class='code'>+(+true + "0")</pre> returns:`,
 		options: [`1`, `10`, `"10"`, `NaN`],
 		correctAnswerIndex: 1,
 	},
@@ -273,6 +273,16 @@ a === b;
 		text: `<pre class='code'>Number("JS")</pre> returns:`,
 		options: [`0`, `null`, `NaN`, `undefined`],
 		correctAnswerIndex: 2,
+	},
+  {
+		text: `<pre class='code'>2 + "2" + 2</pre> returns:`,
+		options: [`6`, `"22"`, `222`, `"222"`],
+		correctAnswerIndex: 3,
+	},
+	{
+		text: `<pre class='code'>2 + "2" - 2</pre> returns:`,
+		options: [`20`, `2`, `"20"`, `18`],
+		correctAnswerIndex: 0,
 	},
 	{
 		text: `<pre class='code'>
@@ -345,17 +355,17 @@ undefined + 1;
 	{
 		text: `<pre class='code'>
 (
-	function(a) {
-    	a = "JavaScript";
-    	return arguments[0];
-	}
+  function(a) {
+    a = "JavaScript";
+    return arguments[0];
+  }
 )(1)
 </pre> returns:`,
 		options: ["undefined", "1", '"JavaScript"', "Uncaught ReferenceError: arguments is not defined"],
 		correctAnswerIndex: 2,
 	},
 	{
-		text: `<pre class='code'>2 < 3 >  1</pre> returns:`,
+		text: `<pre class='code'>2 < 3 > 1</pre> returns:`,
 		options: [`true`, `false`, `null`, `undefined`],
 		correctAnswerIndex: 1,
 	},
@@ -365,9 +375,19 @@ undefined + 1;
 		correctAnswerIndex: 1,
 	},
 	{
+		text: `<pre class='code'>2.toFixed(2)</pre> returns:`,
+		options: [
+			"Error: SyntaxError: Invalid or unexpected token",
+			"2.00",
+			"Uncaught TypeError: undefined.toFixed is not a function",
+			"Uncaught SyntaxError: Unexpected number",
+		],
+		correctAnswerIndex: 0,
+	},
+  {
 		text: `<pre class='code'>2..toFixed(2)</pre> returns:`,
 		options: [
-			"Uncaught SyntaxError: Unexpected token '.'",
+			"Error: SyntaxError: Invalid or unexpected token",
 			"2.00",
 			"Uncaught TypeError: undefined.toFixed is not a function",
 			"Uncaught SyntaxError: Unexpected number",
@@ -375,18 +395,18 @@ undefined + 1;
 		correctAnswerIndex: 1,
 	},
 	{
-		text: `<pre class='code'>(()=> { return ("False",false,+5,"Henrik")})()</pre> returns:`,
-		options: ["Falsefalse5Henrik", "false", "Henrik", "5"],
+		text: `<pre class='code'>(()=> { return ("False",false,+5,"Javascript")})()</pre> returns:`,
+		options: ["Falsefalse5Javascript", "false", "Javascript", "5"],
 		correctAnswerIndex: 2,
 	},
 	{
 		text: `<pre class='code'>parseInt(0.0000008, 10)</pre> returns:`,
 		options: ["1", "8", "0", "10"],
-		correctAnswerIndex: 2,
+		correctAnswerIndex: 1,
 	},
 	{
 		text: `<pre class='code'>parseInt("one", 16);</pre> returns:`,
-		options: ["NaN", "1", "0", "15"],
+		options: ["1", "0", "15", "NaN"],
 		correctAnswerIndex: 3,
 	},
 	{
@@ -397,7 +417,7 @@ undefined + 1;
 	{
 		text: `<pre class='code'>parseInt(1/"Infinity"+2_000_000_000_000_000_000_000)</pre> returns:`,
 		options: ["2", "NaN", "Infinity", "2000000000000000000000"],
-		correctAnswerIndex: 1,
+		correctAnswerIndex: 0,
 	},
 	{
 		text: `<pre class='code'>
@@ -405,29 +425,29 @@ const returnArgsArray = (...a) => a;
 returnArgsArray\`it's${" not "} going to work\`[0].join("").toString()
 </pre> returns:`,
 		options: ["it's not going to work", "i", "it's going to work", "n"],
-		correctAnswerIndex: 1,
+		correctAnswerIndex: 0,
 	},
 
 	{
 		text: `<pre class='code'>
 (() => {
-	try {
-		return 1;
-	} catch (err) {
-		return 2;
-	} finally {
-		return 3;
-	}
-	return 4;
+  try {
+    return 1;
+  } catch (err) {
+    return 2;
+  } finally {
+    return 3;
+  }
+  return 4;
 })()
 </pre> returns:`,
 		options: ["1", "2", "3", "4"],
-		correctAnswerIndex: 0,
+		correctAnswerIndex: 2,
 	},
 	{
 		text: `<pre class='code'>
 function wtf({ x = 32 } = {}) {
-	console.log(x);
+  console.log(x);
 }
 // which of the following does not return 32?
 </pre> returns:`,
@@ -435,24 +455,24 @@ function wtf({ x = 32 } = {}) {
 		correctAnswerIndex: 2,
 	},
 	{
-		text: `<pre class='code'>[...[...[...[...'...']]]].length</pre> returns:`,
+		text: `<pre class='code'>[...[...[...[..."..."]]]].length</pre> returns:`,
 		options: [`4`, `3`, `5`, `NaN`],
 		correctAnswerIndex: 1,
 	},
 	{
 		text: `<pre class='code'>typeof a === [][+[]] + []</pre> returns:`,
-		options: [`false`, `true`, `null`, `undefined`],
-		correctAnswerIndex: 1,
+		options: [`false`, `null`, `true`, `undefined`],
+		correctAnswerIndex: 2,
 	},
 	{
 		text: `<pre class='code'>! + [] + !+[]</pre> returns:`,
-		options: [`1`, `2`, `true`, `false`],
-		correctAnswerIndex: 1,
+		options: [`1`, `true`, `false`, `2`],
+		correctAnswerIndex: 3,
 	},
 	{
-		text: `which one of the following is true?</pre> returns:`,
+		text: `which one of the following is true?</pre>`,
 		options: ["null > 0", "null == 0", "null >= 0", "null === 0"],
-		correctAnswerIndex: 0,
+		correctAnswerIndex: 2,
 	},
 	{
 		text: `which one returns "copenhagenJS"?`,
@@ -466,34 +486,28 @@ function wtf({ x = 32 } = {}) {
 	},
 	{
 		text: `<pre class='code'>
-const Dev = (name) =>  this.name = name || "Sameda";
-const dev = Dev("Rando");
-dev.name
+const Dev = (name) =>  this.name = name || "Java";
+const dev = Dev("Script");
 </pre> returns:`,
-		options: [`dev.name === "Rando"`, `window.name === "Rando"`, `Dev.name === "Sameda"`, `this.name === Dev.name`],
+		options: [`dev.name === "Script"`, `window.name === "Script"`, `Dev.name === "Java"`, `this.name === Dev.name`],
 		correctAnswerIndex: 1,
 	},
 	{
 		text: `<pre class='code'>
 new (
-	class {
-		[""] = []
-		["it"] = ["returned"]
-		["somtehing?"] = ["?"]
-		[{}] = [[]]
-		[null] = [undefined]
-		[3] = "WTF"
-	}
+  class {
+    [""] = []
+    ["it"] = ["returned"]
+    ["somtehing?"] = ["?"]
+    [{}] = [[]]
+    [null] = [undefined]
+    [3] = "WTF"
+  }
 )
 ()[""]
 </pre> returns:`,
-		options: [`undefined`, `"WTF"`, `[]`, `null`],
+		options: [`undefined`, `[]`, `"WTF"`, `null`],
 		correctAnswerIndex: 2,
-	},
-	{
-		text: `<pre class='code'>("b" + "a" + + "a" + "a").toLowerCase();</pre> returns:`,
-		options: [`"baNaNa"`, `"banana"`, `"baaa"`, `"baan"`],
-		correctAnswerIndex: 1,
 	},
 	{
 		text: `<pre class='code'>12345678912345678 + 1</pre> returns:`,
@@ -501,18 +515,8 @@ new (
 		correctAnswerIndex: 1,
 	},
 	{
-		text: `<pre class='code'>2 + "2" + 2</pre> returns:`,
-		options: [`6`, `"222"`, `"22"`, `222`],
-		correctAnswerIndex: 1,
-	},
-	{
-		text: `<pre class='code'>2 + "2" - 2</pre> returns:`,
-		options: [`2`, `20`, `"20"`, `18`],
-		correctAnswerIndex: 1,
-	},
-	{
 		text: `<pre class='code'>(+(!+[]+!+[]+!+[]+[!+[]+!+[]]))[(!![]+[])[+[]]+(!![]+[][(![]+[])[+!+[]]+(!![]+[])[+[]]])[+!+[]+[+[]]]+([]+[])[([][(![]+[])[+!+[]]+(!![]+[])[+[]]]+[])[!+[]+!+[]+!+[]]+(!![]+[][(![]+[])[+!+[]]+(!![]+[])[+[]]])[+!+[]+[+[]]]+([][[]]+[])[+!+[]]+(![]+[])[!+[]+!+[]+!+[]]+(!![]+[])[+[]]+(!![]+[])[+!+[]]+([][[]]+[])[+[]]+([][(![]+[])[+!+[]]+(!![]+[])[+[]]]+[])[!+[]+!+[]+!+[]]+(!![]+[])[+[]]+(!![]+[][(![]+[])[+!+[]]+(!![]+[])[+[]]])[+!+[]+[+[]]]+(!![]+[])[+!+[]]][([][[]]+[])[+!+[]]+(![]+[])[+!+[]]+((+[])[([][(![]+[])[+!+[]]+(!![]+[])[+[]]]+[])[!+[]+!+[]+!+[]]+(!![]+[][(![]+[])[+!+[]]+(!![]+[])[+[]]])[+!+[]+[+[]]]+([][[]]+[])[+!+[]]+(![]+[])[!+[]+!+[]+!+[]]+(!![]+[])[+[]]+(!![]+[])[+!+[]]+([][[]]+[])[+[]]+([][(![]+[])[+!+[]]+(!![]+[])[+[]]]+[])[!+[]+!+[]+!+[]]+(!![]+[])[+[]]+(!![]+[][(![]+[])[+!+[]]+(!![]+[])[+[]]])[+!+[]+[+[]]]+(!![]+[])[+!+[]]]+[])[+!+[]+[+!+[]]]+(!![]+[])[!+[]+!+[]+!+[]]]](!+[]+!+[]+!+[]+[!+[]+!+[]+!+[]])+(!![]+[])[+[]]+(![]+[])[+[]]</pre> returns:`,
 		options: [`undefined`, `null`, `"wtf"`, `NaN`],
-		correctAnswerIndex: 1,
+		correctAnswerIndex: 2,
 	},
 ];
