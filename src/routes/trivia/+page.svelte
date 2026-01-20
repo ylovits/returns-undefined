@@ -43,10 +43,22 @@
 	// Track if we've started auto-navigating to prevent multiple triggers
 	let autoNavigating = $state<boolean>(false);
 
+	// Timeout configuration (in milliseconds)
+	const ANSWER_TIMEOUT = 15000; // 15 seconds
+	let timeoutId: ReturnType<typeof setTimeout> | null = null;
+	let timeoutTriggered = $state<boolean>(false);
+	let timedOutPlayers = $state<Set<number>>(new Set());
+
 	// Auto-navigate when all players answered correctly
 	$effect(() => {
 		if (allAnswered && allCorrect && !autoNavigating && activePlayers > 0) {
 			autoNavigating = true;
+
+			// Clear any existing timeout since all players answered
+			if (timeoutId) {
+				clearTimeout(timeoutId);
+				timeoutId = null;
+			}
 
 			// Wait 1.5 seconds so players can see they got it right before starting the game
 			setTimeout(() => {
@@ -55,8 +67,45 @@
 		}
 	});
 
+	// Start timeout timer when component mounts
+	$effect(() => {
+		if (activePlayers > 0 && !autoNavigating) {
+			// Set up timeout to auto-navigate if players take too long
+			timeoutId = setTimeout(() => {
+				if (!autoNavigating) {
+					// Track which players didn't answer in time
+					const newTimedOutPlayers = new Set<number>();
+					Object.keys(players).forEach((playerKey) => {
+						const playerIndex = Number(playerKey);
+						const player = players[playerIndex];
+						if (player.active && !player.selected) {
+							newTimedOutPlayers.add(playerIndex);
+						}
+					});
+					timedOutPlayers = newTimedOutPlayers;
+
+					timeoutTriggered = true;
+					autoNavigating = true;
+
+					// Wait for shake animation to complete before navigating (600ms animation + 200ms buffer)
+					setTimeout(() => {
+						handleClick();
+					}, 800);
+				}
+			}, ANSWER_TIMEOUT);
+
+			// Cleanup function to clear timeout when effect reruns or component unmounts
+			return () => {
+				if (timeoutId) {
+					clearTimeout(timeoutId);
+					timeoutId = null;
+				}
+			};
+		}
+	});
+
 	const getClasses = (i: number) => {
-		const correct = readyPlayers > 0 && allAnswered && data.question.correctAnswerIndex === i;
+		const correct = (readyPlayers > 0 && allAnswered || timeoutTriggered) && data.question.correctAnswerIndex === i;
 		const selected = Object.keys(players).some((playerKey) => players[Number(playerKey)].currentSelection === i);
 		const answered = Object.keys(players).some(
 			(playerKey) => players[Number(playerKey)].currentSelection === i && players[Number(playerKey)].selected
@@ -80,6 +129,8 @@
 		scoresContext.scores = currentScore;
 		score.value = currentScore;
 		autoNavigating = false; // Reset auto-navigation flag when resetting
+		timeoutTriggered = false; // Reset timeout triggered flag
+		timedOutPlayers = new Set(); // Reset timed out players
 	};
 
 	// Handle mouse click on answer options for mouse players
@@ -123,7 +174,7 @@
 <div class="question">
 	<h1>{@html highlightedQuestionText}</h1>
 	<span class="answers-wrapper">
-		<Players pageName="trivia" {answerElements} {wrapperElm} question={data.question} />
+		<Players pageName="trivia" {answerElements} {wrapperElm} question={data.question} {timedOutPlayers} />
 		<!-- <ul class="answers" bind:this={wrapperElm}>
 			{#each data.question.options as option, i}
 				<li id={`answer-${i + 1}`} bind:this={answerElements[i]}>

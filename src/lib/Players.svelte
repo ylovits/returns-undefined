@@ -225,7 +225,7 @@
 					? playersContext.players[i]
 					: initialPlayerObject}
 			{#if active}
-				<Player {active} {pressing} {selected} {x} {y} {shape} {multiplier} />
+				<Player {active} {pressing} {selected} {x} {y} {shape} {multiplier} timedOut={props.timedOutPlayers?.has(i) || false} />
 			{/if}
 		{/each}
 	{/key}
