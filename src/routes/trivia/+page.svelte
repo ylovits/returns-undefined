@@ -44,7 +44,7 @@
 	let autoNavigating = $state<boolean>(false);
 
 	// Timeout configuration (in milliseconds)
-	const ANSWER_TIMEOUT = 15000; // 15 seconds
+	const ANSWER_TIMEOUT = 18000; // 18 seconds
 	let timeoutId: ReturnType<typeof setTimeout> | null = null;
 	let timeoutTriggered = $state<boolean>(false);
 	let timedOutPlayers = $state<Set<number>>(new Set());
